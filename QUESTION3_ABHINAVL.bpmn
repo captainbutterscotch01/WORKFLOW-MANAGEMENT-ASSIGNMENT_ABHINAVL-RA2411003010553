@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.50.1">
+  <bpmn:process id="Process_ITServiceRequest" name="IT Service Request" isExecutable="false">
+    <bpmn:startEvent id="S3_Start" name="Employee reports IT problem" />
+    <bpmn:task id="S3_Submit" name="Submit IT support request" />
+    <bpmn:task id="S3_Register" name="Register request" />
+    <bpmn:task id="S3_CheckSeverity" name="Check problem severity" />
+    <bpmn:exclusiveGateway id="S3_G1" name="Severity?" />
+    <bpmn:task id="S3_Low" name="Assign to support technician" />
+    <bpmn:task id="S3_High" name="Assign to senior technician" />
+    <bpmn:task id="S3_Investigate" name="Investigate problem" />
+    <bpmn:exclusiveGateway id="S3_G2" name="Can be resolved internally?" />
+    <bpmn:task id="S3_Fix" name="Fix problem" />
+    <bpmn:task id="S3_Escalate" name="Escalate to external service provider" />
+    <bpmn:task id="S3_Update" name="Update request status" />
+    <bpmn:task id="S3_Notify" name="Send resolution notification" />
+    <bpmn:endEvent id="S3_End" name="Request resolved" />
+    <bpmn:sequenceFlow id="S3F1" sourceRef="S3_Start" targetRef="S3_Submit" />
+    <bpmn:sequenceFlow id="S3F2" sourceRef="S3_Submit" targetRef="S3_Register" />
+    <bpmn:sequenceFlow id="S3F3" sourceRef="S3_Register" targetRef="S3_CheckSeverity" />
+    <bpmn:sequenceFlow id="S3F4" sourceRef="S3_CheckSeverity" targetRef="S3_G1" />
+    <bpmn:sequenceFlow id="S3F5" name="Low" sourceRef="S3_G1" targetRef="S3_Low" />
+    <bpmn:sequenceFlow id="S3F6" name="High" sourceRef="S3_G1" targetRef="S3_High" />
+    <bpmn:sequenceFlow id="S3F7" sourceRef="S3_Low" targetRef="S3_Investigate" />
+    <bpmn:sequenceFlow id="S3F8" sourceRef="S3_High" targetRef="S3_Investigate" />
+    <bpmn:sequenceFlow id="S3F9" sourceRef="S3_Investigate" targetRef="S3_G2" />
+    <bpmn:sequenceFlow id="S3F10" name="Yes" sourceRef="S3_G2" targetRef="S3_Fix" />
+    <bpmn:sequenceFlow id="S3F11" name="No" sourceRef="S3_G2" targetRef="S3_Escalate" />
+    <bpmn:sequenceFlow id="S3F12" sourceRef="S3_Fix" targetRef="S3_Update" />
+    <bpmn:sequenceFlow id="S3F13" sourceRef="S3_Escalate" targetRef="S3_Update" />
+    <bpmn:sequenceFlow id="S3F14" sourceRef="S3_Update" targetRef="S3_Notify" />
+    <bpmn:sequenceFlow id="S3F15" sourceRef="S3_Notify" targetRef="S3_End" />
+    <bpmn:dataObjectReference id="DataObjectReference_0r9a900" name="Scenario 3: IT Service Request" dataObjectRef="DataObject_158b67p" />
+    <bpmn:dataObject id="DataObject_158b67p" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_ITServiceRequest">
+      <bpmndi:BPMNShape id="S3_Start_di" bpmnElement="S3_Start">
+        <dc:Bounds x="180" y="320" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="356" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Submit_di" bpmnElement="S3_Submit">
+        <dc:Bounds x="250" y="308" width="160" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Register_di" bpmnElement="S3_Register">
+        <dc:Bounds x="450" y="308" width="130" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_CheckSeverity_di" bpmnElement="S3_CheckSeverity">
+        <dc:Bounds x="620" y="308" width="150" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_G1_di" bpmnElement="S3_G1" isMarkerVisible="true">
+        <dc:Bounds x="820" y="313" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="822" y="363" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Low_di" bpmnElement="S3_Low">
+        <dc:Bounds x="920" y="220" width="170" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_High_di" bpmnElement="S3_High">
+        <dc:Bounds x="920" y="400" width="170" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Investigate_di" bpmnElement="S3_Investigate">
+        <dc:Bounds x="1130" y="308" width="140" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_G2_di" bpmnElement="S3_G2" isMarkerVisible="true">
+        <dc:Bounds x="1320" y="313" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1305" y="363" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Fix_di" bpmnElement="S3_Fix">
+        <dc:Bounds x="1420" y="220" width="120" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Escalate_di" bpmnElement="S3_Escalate">
+        <dc:Bounds x="1420" y="400" width="190" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Update_di" bpmnElement="S3_Update">
+        <dc:Bounds x="1650" y="308" width="150" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_Notify_di" bpmnElement="S3_Notify">
+        <dc:Bounds x="1840" y="308" width="180" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S3_End_di" bpmnElement="S3_End">
+        <dc:Bounds x="2070" y="320" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2045" y="356" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0r9a900_di" bpmnElement="DataObjectReference_0r9a900">
+        <dc:Bounds x="1002" y="85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="870" y="142" width="300" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="S3F1_di" bpmnElement="S3F1">
+        <di:waypoint x="216" y="338" />
+        <di:waypoint x="250" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F2_di" bpmnElement="S3F2">
+        <di:waypoint x="410" y="338" />
+        <di:waypoint x="450" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F3_di" bpmnElement="S3F3">
+        <di:waypoint x="580" y="338" />
+        <di:waypoint x="620" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F4_di" bpmnElement="S3F4">
+        <di:waypoint x="770" y="338" />
+        <di:waypoint x="820" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F5_di" bpmnElement="S3F5">
+        <di:waypoint x="870" y="338" />
+        <di:waypoint x="920" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="885" y="269" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F6_di" bpmnElement="S3F6">
+        <di:waypoint x="870" y="338" />
+        <di:waypoint x="920" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="884" y="359" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F7_di" bpmnElement="S3F7">
+        <di:waypoint x="1090" y="250" />
+        <di:waypoint x="1130" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F8_di" bpmnElement="S3F8">
+        <di:waypoint x="1090" y="430" />
+        <di:waypoint x="1130" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F9_di" bpmnElement="S3F9">
+        <di:waypoint x="1270" y="338" />
+        <di:waypoint x="1320" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F10_di" bpmnElement="S3F10">
+        <di:waypoint x="1370" y="338" />
+        <di:waypoint x="1420" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1386" y="269" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F11_di" bpmnElement="S3F11">
+        <di:waypoint x="1370" y="338" />
+        <di:waypoint x="1420" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1388" y="359" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F12_di" bpmnElement="S3F12">
+        <di:waypoint x="1540" y="250" />
+        <di:waypoint x="1650" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F13_di" bpmnElement="S3F13">
+        <di:waypoint x="1610" y="430" />
+        <di:waypoint x="1650" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F14_di" bpmnElement="S3F14">
+        <di:waypoint x="1800" y="338" />
+        <di:waypoint x="1840" y="338" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="S3F15_di" bpmnElement="S3F15">
+        <di:waypoint x="2020" y="338" />
+        <di:waypoint x="2070" y="338" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_CalculateDiscounts" name="Order Discount Decisions" namespace="http://example.com/order-discount">
+  <decision id="calculate-discounts" name="calculate-discounts">
+    <decisionTable id="DecisionTable_CalculateDiscounts" hitPolicy="COLLECT">
+      <input id="Input_CustomerTier" label="customerTier"><inputExpression id="InputExpression_CustomerTier" typeRef="string"><text>customerTier</text></inputExpression></input>
+      <input id="Input_CartValue" label="cartValue"><inputExpression id="InputExpression_CartValue" typeRef="double"><text>cartValue</text></inputExpression></input>
+      <input id="Input_PromoCode" label="promoCode"><inputExpression id="InputExpression_PromoCode" typeRef="string"><text>promoCode</text></inputExpression></input>
+      <output id="Output_DiscountPercent" label="discountPercent" name="discountPercent" typeRef="integer"><camunda:aggregation>sum</camunda:aggregation></output>
+      <rule id="Rule_Premium"><inputEntry id="Premium_Tier"><text>"PREMIUM"</text></inputEntry><inputEntry id="Premium_Cart"><text>-</text></inputEntry><inputEntry id="Premium_Promo"><text>-</text></inputEntry><outputEntry id="Premium_Discount"><text>10</text></outputEntry></rule>
+      <rule id="Rule_Cart500"><inputEntry id="Cart500_Tier"><text>-</text></inputEntry><inputEntry id="Cart500_Cart"><text>&gt;= 500</text></inputEntry><inputEntry id="Cart500_Promo"><text>-</text></inputEntry><outputEntry id="Cart500_Discount"><text>5</text></outputEntry></rule>
+      <rule id="Rule_Promo"><inputEntry id="Promo_Tier"><text>-</text></inputEntry><inputEntry id="Promo_Cart"><text>-</text></inputEntry><inputEntry id="Promo_Promo"><text>"FESTIVE10","SPECIAL10"</text></inputEntry><outputEntry id="Promo_Discount"><text>10</text></outputEntry></rule>
+      <rule id="Rule_Default"><inputEntry id="Default_Tier"><text>-</text></inputEntry><inputEntry id="Default_Cart"><text>-</text></inputEntry><inputEntry id="Default_Promo"><text>-</text></inputEntry><outputEntry id="Default_Discount"><text>0</text></outputEntry></rule>
+    </decisionTable>
+  </decision>
+</definitions>

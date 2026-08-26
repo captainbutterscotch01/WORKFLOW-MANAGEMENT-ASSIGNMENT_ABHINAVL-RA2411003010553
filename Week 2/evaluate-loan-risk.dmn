@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_EvaluateLoanRisk" name="Loan Risk Decisions" namespace="http://example.com/loan-risk">
+  <decision id="evaluate-loan-risk" name="evaluate-loan-risk">
+    <decisionTable id="DecisionTable_EvaluateLoanRisk" hitPolicy="UNIQUE">
+      <input id="Input_CreditScore" label="creditScore"><inputExpression id="InputExpression_CreditScore" typeRef="integer"><text>creditScore</text></inputExpression></input>
+      <input id="Input_LoanAmount" label="loanAmount"><inputExpression id="InputExpression_LoanAmount" typeRef="double"><text>loanAmount</text></inputExpression></input>
+      <output id="Output_RiskTier" label="riskTier" name="riskTier" typeRef="string"/>
+      <output id="Output_ManualReview" label="requiresManualReview" name="requiresManualReview" typeRef="boolean"/>
+      <rule id="Rule_Low"><inputEntry id="Low_Credit"><text>&gt;= 750</text></inputEntry><inputEntry id="Low_Amount"><text>&lt;= 50000</text></inputEntry><outputEntry id="Low_Risk"><text>"LOW"</text></outputEntry><outputEntry id="Low_Manual"><text>false</text></outputEntry></rule>
+      <rule id="Rule_Medium_HighAmount"><inputEntry id="Medium_Credit"><text>&gt;= 750</text></inputEntry><inputEntry id="Medium_Amount"><text>&gt; 50000</text></inputEntry><outputEntry id="Medium_Risk"><text>"MEDIUM"</text></outputEntry><outputEntry id="Medium_Manual"><text>true</text></outputEntry></rule>
+      <rule id="Rule_Medium_CreditRange"><inputEntry id="Range_Credit"><text>[600..749]</text></inputEntry><inputEntry id="Range_Amount"><text>-</text></inputEntry><outputEntry id="Range_Risk"><text>"MEDIUM"</text></outputEntry><outputEntry id="Range_Manual"><text>true</text></outputEntry></rule>
+      <rule id="Rule_High"><inputEntry id="High_Credit"><text>&lt; 600</text></inputEntry><inputEntry id="High_Amount"><text>-</text></inputEntry><outputEntry id="High_Risk"><text>"HIGH"</text></outputEntry><outputEntry id="High_Manual"><text>false</text></outputEntry></rule>
+    </decisionTable>
+  </decision>
+</definitions>

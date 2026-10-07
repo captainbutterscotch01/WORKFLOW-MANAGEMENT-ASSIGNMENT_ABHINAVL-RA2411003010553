@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Defs_A1" targetNamespace="http://example.org/bpmn" exporter="bpmn-generator" exporterVersion="1.0">
+  <bpmn:message id="Msg_late" name="Late request"/>
+  <bpmn:message id="Msg_wd" name="Withdrawal notice"/>
+  <bpmn:message id="Msg_acc" name="Guide accepts"/>
+  <bpmn:message id="Msg_dec" name="Guide declines"/>
+  <bpmn:message id="Msg_req" name="Allocation request"/>
+  <bpmn:error id="Err_sys" name="Record / notify failure"/>
+  <bpmn:escalation id="Esc_hod" name="Review overdue"/>
+  <bpmn:collaboration id="Collab_A1">
+    <bpmn:participant id="P_main" name="Student Project Approval &amp; Allocation" processRef="Process_A1"/>
+    <bpmn:participant id="P_guide" name="Faculty Guide"/>
+    <bpmn:messageFlow id="m_t_req_P_guide" name="request" sourceRef="t_req" targetRef="P_guide"/>
+    <bpmn:messageFlow id="m_P_guide_e_resp" name="accepts / declines" sourceRef="P_guide" targetRef="e_resp"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_A1" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_stu" name="Student / Team">
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_submit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>b_late</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_late</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_mod</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_rev</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>b_revt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_new</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_coo" name="Project Coordinator">
+        <bpmn:flowNodeRef>t_latedec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_late</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_lapsed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_esc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_inv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_screen</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_dup</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_rule</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_cyc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_revl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_manual</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_ok2</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_com" name="Review Committee (incl. HoD)">
+        <bpmn:flowNodeRef>m_eval</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_eval</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>b_rem</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>b_hod</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>e_esc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_hod</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>m_dec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_dec</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_sys" name="Project Management System">
+        <bpmn:flowNodeRef>t_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_val</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_team</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_team</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_cnt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_sim</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_sim</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_rem</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_rem</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_rej</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_new</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_rej</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>sub</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>b_wd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>e_comp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_who</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_wd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>sub2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>b_err</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_retry</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_ok</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="Team decides to submit proposal"><bpmn:outgoing>f_start_t_submit</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:userTask id="t_submit" name="Prepare &amp; submit proposal"><bpmn:incoming>f_start_t_submit</bpmn:incoming><bpmn:incoming>f_g_late_t_submit</bpmn:incoming><bpmn:incoming>f_g_cnt_t_submit</bpmn:incoming><bpmn:outgoing>f_t_submit_t_val</bpmn:outgoing></bpmn:userTask>
+    <bpmn:boundaryEvent id="b_late" name="Submission deadline passed" cancelActivity="true" attachedToRef="t_submit"><bpmn:outgoing>f_b_late_t_late</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P0D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+    <bpmn:userTask id="t_late" name="Request late submission"><bpmn:incoming>f_b_late_t_late</bpmn:incoming><bpmn:outgoing>f_t_late_t_latedec</bpmn:outgoing></bpmn:userTask>
+    <bpmn:userTask id="t_latedec" name="Review late request"><bpmn:incoming>f_t_late_t_latedec</bpmn:incoming><bpmn:outgoing>f_t_latedec_g_late</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="g_late" name="Late request approved?"><bpmn:incoming>f_t_latedec_g_late</bpmn:incoming><bpmn:outgoing>f_g_late_t_submit</bpmn:outgoing><bpmn:outgoing>f_g_late_end_lapsed</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end_lapsed" name="Lapsed: deadline missed"><bpmn:incoming>f_g_late_end_lapsed</bpmn:incoming></bpmn:endEvent>
+    <bpmn:serviceTask id="t_val" name="Validate form &amp; team rules"><bpmn:incoming>f_t_submit_t_val</bpmn:incoming><bpmn:incoming>f_t_new_t_val</bpmn:incoming><bpmn:outgoing>f_t_val_g_val</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="g_val" name="Validation result?"><bpmn:incoming>f_t_val_g_val</bpmn:incoming><bpmn:outgoing>f_g_val_t_screen</bpmn:outgoing><bpmn:outgoing>f_g_val_g_cnt</bpmn:outgoing><bpmn:outgoing>f_g_val_t_team</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:sendTask id="t_team" name="Notify team: invalid team"><bpmn:incoming>f_g_val_t_team</bpmn:incoming><bpmn:outgoing>f_t_team_end_team</bpmn:outgoing></bpmn:sendTask>
+    <bpmn:endEvent id="end_team" name="Invalid team (reform team)"><bpmn:incoming>f_t_team_end_team</bpmn:incoming><bpmn:errorEventDefinition errorRef="Err_sys"/></bpmn:endEvent>
+    <bpmn:exclusiveGateway id="g_cnt" name="Resubmissions &lt; 2?"><bpmn:incoming>f_g_val_g_cnt</bpmn:incoming><bpmn:outgoing>f_g_cnt_t_submit</bpmn:outgoing><bpmn:outgoing>f_g_cnt_t_esc</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_esc" name="Coordinator contacts team &amp; closes case"><bpmn:incoming>f_g_cnt_t_esc</bpmn:incoming><bpmn:outgoing>f_t_esc_end_inv</bpmn:outgoing></bpmn:userTask>
+    <bpmn:endEvent id="end_inv" name="Closed: invalid proposal"><bpmn:incoming>f_t_esc_end_inv</bpmn:incoming></bpmn:endEvent>
+    <bpmn:userTask id="t_screen" name="Screen proposal"><bpmn:incoming>f_g_val_t_screen</bpmn:incoming><bpmn:outgoing>f_t_screen_t_sim</bpmn:outgoing></bpmn:userTask>
+    <bpmn:serviceTask id="t_sim" name="Run similarity / duplicate-topic check"><bpmn:incoming>f_t_screen_t_sim</bpmn:incoming><bpmn:incoming>f_t_mod_t_sim</bpmn:incoming><bpmn:outgoing>f_t_sim_g_sim</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="g_sim" name="Similarity above threshold?"><bpmn:incoming>f_t_sim_g_sim</bpmn:incoming><bpmn:outgoing>f_g_sim_t_dup</bpmn:outgoing><bpmn:outgoing>f_g_sim_m_eval</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_dup" name="Review similarity match"><bpmn:incoming>f_g_sim_t_dup</bpmn:incoming><bpmn:outgoing>f_t_dup_g_rule</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="g_rule" name="Coordinator ruling"><bpmn:incoming>f_t_dup_g_rule</bpmn:incoming><bpmn:outgoing>f_g_rule_t_mod</bpmn:outgoing><bpmn:outgoing>f_g_rule_m_eval</bpmn:outgoing><bpmn:outgoing>f_g_rule_t_rej</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_mod" name="Modify topic"><bpmn:incoming>f_g_rule_t_mod</bpmn:incoming><bpmn:outgoing>f_t_mod_t_sim</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="m_eval"><bpmn:incoming>f_g_sim_m_eval</bpmn:incoming><bpmn:incoming>f_g_rule_m_eval</bpmn:incoming><bpmn:incoming>f_t_rev_m_eval</bpmn:incoming><bpmn:outgoing>f_m_eval_t_eval</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_eval" name="Committee evaluates proposal"><bpmn:incoming>f_m_eval_t_eval</bpmn:incoming><bpmn:incoming>f_g_cyc_t_eval</bpmn:incoming><bpmn:outgoing>f_t_eval_m_dec</bpmn:outgoing></bpmn:userTask>
+    <bpmn:boundaryEvent id="b_rem" name="7 days: no decision" cancelActivity="false" attachedToRef="t_eval"><bpmn:outgoing>f_b_rem_t_rem</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="b_hod" name="14 days: still no decision" cancelActivity="true" attachedToRef="t_eval"><bpmn:outgoing>f_b_hod_e_esc</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P14D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+    <bpmn:sendTask id="t_rem" name="Send reminder to committee"><bpmn:incoming>f_b_rem_t_rem</bpmn:incoming><bpmn:outgoing>f_t_rem_end_rem</bpmn:outgoing></bpmn:sendTask>
+    <bpmn:endEvent id="end_rem" name="Reminder sent"><bpmn:incoming>f_t_rem_end_rem</bpmn:incoming></bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="e_esc" name="Escalate to HoD"><bpmn:incoming>f_b_hod_e_esc</bpmn:incoming><bpmn:outgoing>f_e_esc_t_hod</bpmn:outgoing><bpmn:escalationEventDefinition escalationRef="Esc_hod"/></bpmn:intermediateThrowEvent>
+    <bpmn:userTask id="t_hod" name="HoD decides on behalf of committee"><bpmn:incoming>f_e_esc_t_hod</bpmn:incoming><bpmn:outgoing>f_t_hod_m_dec</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="m_dec"><bpmn:incoming>f_t_eval_m_dec</bpmn:incoming><bpmn:incoming>f_t_hod_m_dec</bpmn:incoming><bpmn:outgoing>f_m_dec_g_dec</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="g_dec" name="Committee decision"><bpmn:incoming>f_m_dec_g_dec</bpmn:incoming><bpmn:outgoing>f_g_dec_sub</bpmn:outgoing><bpmn:outgoing>f_g_dec_g_cyc</bpmn:outgoing><bpmn:outgoing>f_g_dec_t_rej</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="g_cyc" name="Revisions &lt; 2?"><bpmn:incoming>f_g_dec_g_cyc</bpmn:incoming><bpmn:outgoing>f_g_cyc_t_rev</bpmn:outgoing><bpmn:outgoing>f_g_cyc_t_eval</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_rev" name="Revise proposal"><bpmn:incoming>f_g_cyc_t_rev</bpmn:incoming><bpmn:outgoing>f_t_rev_m_eval</bpmn:outgoing></bpmn:userTask>
+    <bpmn:boundaryEvent id="b_revt" name="7 days: no revision" cancelActivity="true" attachedToRef="t_rev"><bpmn:outgoing>f_b_revt_end_revl</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+    <bpmn:endEvent id="end_revl" name="Lapsed: no revision"><bpmn:incoming>f_b_revt_end_revl</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sendTask id="t_rej" name="Send rejection reasons to team"><bpmn:incoming>f_g_rule_t_rej</bpmn:incoming><bpmn:incoming>f_g_dec_t_rej</bpmn:incoming><bpmn:outgoing>f_t_rej_g_new</bpmn:outgoing></bpmn:sendTask>
+    <bpmn:exclusiveGateway id="g_new" name="First rejection?"><bpmn:incoming>f_t_rej_g_new</bpmn:incoming><bpmn:outgoing>f_g_new_t_new</bpmn:outgoing><bpmn:outgoing>f_g_new_end_rej</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_new" name="Submit one new topic"><bpmn:incoming>f_g_new_t_new</bpmn:incoming><bpmn:outgoing>f_t_new_t_val</bpmn:outgoing></bpmn:userTask>
+    <bpmn:endEvent id="end_rej" name="Rejected"><bpmn:incoming>f_g_new_end_rej</bpmn:incoming></bpmn:endEvent>
+    <bpmn:subProcess id="sub" name="Guide allocation (sub-process)"><bpmn:incoming>f_g_dec_sub</bpmn:incoming><bpmn:incoming>f_g_who_sub</bpmn:incoming><bpmn:outgoing>f_sub_sub2</bpmn:outgoing>
+      <bpmn:startEvent id="i_start"><bpmn:outgoing>f_i_start_t_rule</bpmn:outgoing></bpmn:startEvent>
+      <bpmn:businessRuleTask id="t_rule" name="Check guide availability, workload &amp; domain match"><bpmn:incoming>f_i_start_t_rule</bpmn:incoming><bpmn:incoming>f_g_att_t_rule</bpmn:incoming><bpmn:incoming>f_e_wl_t_rule</bpmn:incoming><bpmn:outgoing>f_t_rule_g_ok</bpmn:outgoing></bpmn:businessRuleTask>
+      <bpmn:exclusiveGateway id="g_ok" name="Eligible guide?"><bpmn:incoming>f_t_rule_g_ok</bpmn:incoming><bpmn:outgoing>f_g_ok_t_resv</bpmn:outgoing><bpmn:outgoing>f_g_ok_t_man</bpmn:outgoing></bpmn:exclusiveGateway>
+      <bpmn:serviceTask id="t_resv" name="Reserve guide slot"><bpmn:incoming>f_g_ok_t_resv</bpmn:incoming><bpmn:incoming>f_g_man_t_resv</bpmn:incoming><bpmn:outgoing>f_t_resv_t_req</bpmn:outgoing></bpmn:serviceTask>
+      <bpmn:sendTask id="t_req" name="Send allocation request to guide"><bpmn:incoming>f_t_resv_t_req</bpmn:incoming><bpmn:outgoing>f_t_req_g_wait</bpmn:outgoing></bpmn:sendTask>
+      <bpmn:eventBasedGateway id="g_wait" name="Await guide response" eventGatewayType="Exclusive"><bpmn:incoming>f_t_req_g_wait</bpmn:incoming><bpmn:outgoing>f_g_wait_e_to</bpmn:outgoing><bpmn:outgoing>f_g_wait_e_resp</bpmn:outgoing></bpmn:eventBasedGateway>
+      <bpmn:intermediateCatchEvent id="e_to" name="3 days: no reply"><bpmn:incoming>f_g_wait_e_to</bpmn:incoming><bpmn:outgoing>f_e_to_t_excl</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P3D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>
+      <bpmn:intermediateCatchEvent id="e_resp" name="Guide response received"><bpmn:incoming>f_g_wait_e_resp</bpmn:incoming><bpmn:outgoing>f_e_resp_g_acc</bpmn:outgoing><bpmn:messageEventDefinition messageRef="Msg_acc"/></bpmn:intermediateCatchEvent>
+      <bpmn:serviceTask id="t_excl" name="Exclude guide &amp; count attempt"><bpmn:incoming>f_e_to_t_excl</bpmn:incoming><bpmn:incoming>f_g_acc_t_excl</bpmn:incoming><bpmn:outgoing>f_t_excl_g_att</bpmn:outgoing></bpmn:serviceTask>
+      <bpmn:exclusiveGateway id="g_acc" name="Guide accepted?"><bpmn:incoming>f_e_resp_g_acc</bpmn:incoming><bpmn:outgoing>f_g_acc_i_end</bpmn:outgoing><bpmn:outgoing>f_g_acc_t_excl</bpmn:outgoing></bpmn:exclusiveGateway>
+      <bpmn:endEvent id="i_end" name="Guide confirmed"><bpmn:incoming>f_g_acc_i_end</bpmn:incoming></bpmn:endEvent>
+      <bpmn:exclusiveGateway id="g_att" name="Attempts &lt; 3?"><bpmn:incoming>f_t_excl_g_att</bpmn:incoming><bpmn:outgoing>f_g_att_t_rule</bpmn:outgoing><bpmn:outgoing>f_g_att_t_man</bpmn:outgoing></bpmn:exclusiveGateway>
+      <bpmn:userTask id="t_man" name="Coordinator allocates manually / co-guide / external guide"><bpmn:incoming>f_g_att_t_man</bpmn:incoming><bpmn:incoming>f_g_ok_t_man</bpmn:incoming><bpmn:outgoing>f_t_man_g_man</bpmn:outgoing></bpmn:userTask>
+      <bpmn:exclusiveGateway id="g_man" name="Manual outcome?"><bpmn:incoming>f_t_man_g_man</bpmn:incoming><bpmn:outgoing>f_g_man_t_resv</bpmn:outgoing><bpmn:outgoing>f_g_man_e_wl</bpmn:outgoing></bpmn:exclusiveGateway>
+      <bpmn:intermediateCatchEvent id="e_wl" name="Waiting list: 14 days"><bpmn:incoming>f_g_man_e_wl</bpmn:incoming><bpmn:outgoing>f_e_wl_t_rule</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P14D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>
+      <bpmn:serviceTask id="t_relc" name="Release guide slot" isForCompensation="true"></bpmn:serviceTask>
+      <bpmn:sequenceFlow id="f_i_start_t_rule" sourceRef="i_start" targetRef="t_rule"/>
+      <bpmn:sequenceFlow id="f_t_rule_g_ok" sourceRef="t_rule" targetRef="g_ok"/>
+      <bpmn:sequenceFlow id="f_g_ok_t_resv" name="Yes" sourceRef="g_ok" targetRef="t_resv"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_ok=="yes"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_t_resv_t_req" sourceRef="t_resv" targetRef="t_req"/>
+      <bpmn:sequenceFlow id="f_t_req_g_wait" sourceRef="t_req" targetRef="g_wait"/>
+      <bpmn:sequenceFlow id="f_g_wait_e_to" sourceRef="g_wait" targetRef="e_to"/>
+      <bpmn:sequenceFlow id="f_g_wait_e_resp" sourceRef="g_wait" targetRef="e_resp"/>
+      <bpmn:sequenceFlow id="f_e_resp_g_acc" sourceRef="e_resp" targetRef="g_acc"/>
+      <bpmn:sequenceFlow id="f_e_to_t_excl" sourceRef="e_to" targetRef="t_excl"/>
+      <bpmn:sequenceFlow id="f_g_acc_i_end" name="Yes" sourceRef="g_acc" targetRef="i_end"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_acc=="yes"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_g_acc_t_excl" name="No: declined" sourceRef="g_acc" targetRef="t_excl"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_acc=="no_declined"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_t_excl_g_att" sourceRef="t_excl" targetRef="g_att"/>
+      <bpmn:sequenceFlow id="f_g_att_t_rule" name="Yes: rerun rule" sourceRef="g_att" targetRef="t_rule"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_att=="yes_rerun_rule"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_g_att_t_man" name="No: manual" sourceRef="g_att" targetRef="t_man"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_att=="no_manual"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_g_ok_t_man" name="No" sourceRef="g_ok" targetRef="t_man"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_ok=="no"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_t_man_g_man" sourceRef="t_man" targetRef="g_man"/>
+      <bpmn:sequenceFlow id="f_g_man_t_resv" name="Guide assigned" sourceRef="g_man" targetRef="t_resv"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_man=="guide_assigned"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_g_man_e_wl" name="Waiting list" sourceRef="g_man" targetRef="e_wl"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_man=="waiting_list"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="f_e_wl_t_rule" sourceRef="e_wl" targetRef="t_rule"/>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="b_comp" cancelActivity="true" attachedToRef="t_resv"><bpmn:compensateEventDefinition/></bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="b_wd" name="Withdrawal (team dissolves / guide on leave)" cancelActivity="true" attachedToRef="sub"><bpmn:outgoing>f_b_wd_e_comp</bpmn:outgoing><bpmn:messageEventDefinition messageRef="Msg_wd"/></bpmn:boundaryEvent>
+    <bpmn:intermediateThrowEvent id="e_comp" name="Compensate allocation"><bpmn:incoming>f_b_wd_e_comp</bpmn:incoming><bpmn:outgoing>f_e_comp_g_who</bpmn:outgoing><bpmn:compensateEventDefinition activityRef="sub"/></bpmn:intermediateThrowEvent>
+    <bpmn:exclusiveGateway id="g_who" name="Who withdrew?"><bpmn:incoming>f_e_comp_g_who</bpmn:incoming><bpmn:outgoing>f_g_who_sub</bpmn:outgoing><bpmn:outgoing>f_g_who_end_wd</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end_wd" name="Withdrawn"><bpmn:incoming>f_g_who_end_wd</bpmn:incoming></bpmn:endEvent>
+    <bpmn:subProcess id="sub2" name="Record allocation &amp; notify (sub-process)"><bpmn:incoming>f_sub_sub2</bpmn:incoming><bpmn:incoming>f_g_retry_sub2</bpmn:incoming><bpmn:outgoing>f_sub2_end_ok</bpmn:outgoing>
+      <bpmn:startEvent id="r_start"></bpmn:startEvent>
+      <bpmn:serviceTask id="r_rec" name="Record allocation"></bpmn:serviceTask>
+      <bpmn:sendTask id="r_not" name="Notify student"></bpmn:sendTask>
+      <bpmn:endEvent id="r_end"></bpmn:endEvent>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="b_err" name="Notification / system error" cancelActivity="true" attachedToRef="sub2"><bpmn:outgoing>f_b_err_g_retry</bpmn:outgoing><bpmn:errorEventDefinition errorRef="Err_sys"/></bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="g_retry" name="Retries &lt; 3?"><bpmn:incoming>f_b_err_g_retry</bpmn:incoming><bpmn:outgoing>f_g_retry_sub2</bpmn:outgoing><bpmn:outgoing>f_g_retry_t_manual</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end_ok" name="Project allocated"><bpmn:incoming>f_sub2_end_ok</bpmn:incoming></bpmn:endEvent>
+    <bpmn:userTask id="t_manual" name="Coordinator notifies team manually"><bpmn:incoming>f_g_retry_t_manual</bpmn:incoming><bpmn:outgoing>f_t_manual_end_ok2</bpmn:outgoing></bpmn:userTask>
+    <bpmn:endEvent id="end_ok2" name="Project allocated"><bpmn:incoming>f_t_manual_end_ok2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f_start_t_submit" sourceRef="start" targetRef="t_submit"/>
+    <bpmn:sequenceFlow id="f_t_submit_t_val" sourceRef="t_submit" targetRef="t_val"/>
+    <bpmn:sequenceFlow id="f_b_late_t_late" name="deadline missed" sourceRef="b_late" targetRef="t_late"/>
+    <bpmn:sequenceFlow id="f_t_late_t_latedec" sourceRef="t_late" targetRef="t_latedec"/>
+    <bpmn:sequenceFlow id="f_t_latedec_g_late" sourceRef="t_latedec" targetRef="g_late"/>
+    <bpmn:sequenceFlow id="f_g_late_t_submit" name="Approved" sourceRef="g_late" targetRef="t_submit"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_late=="approved"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_late_end_lapsed" name="Not approved" sourceRef="g_late" targetRef="end_lapsed"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_late=="not_approved"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_val_g_val" sourceRef="t_val" targetRef="g_val"/>
+    <bpmn:sequenceFlow id="f_g_val_t_screen" name="Valid" sourceRef="g_val" targetRef="t_screen"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_val=="valid"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_val_g_cnt" name="Fields incomplete" sourceRef="g_val" targetRef="g_cnt"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_val=="fields_incomplete"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_val_t_team" name="Team rule failure" sourceRef="g_val" targetRef="t_team"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_val=="team_rule_failure"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_team_end_team" sourceRef="t_team" targetRef="end_team"/>
+    <bpmn:sequenceFlow id="f_g_cnt_t_submit" name="Yes: return error list" sourceRef="g_cnt" targetRef="t_submit"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_cnt=="yes_return_error_list"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_cnt_t_esc" name="No: limit reached" sourceRef="g_cnt" targetRef="t_esc"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_cnt=="no_limit_reached"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_esc_end_inv" sourceRef="t_esc" targetRef="end_inv"/>
+    <bpmn:sequenceFlow id="f_t_screen_t_sim" sourceRef="t_screen" targetRef="t_sim"/>
+    <bpmn:sequenceFlow id="f_t_sim_g_sim" sourceRef="t_sim" targetRef="g_sim"/>
+    <bpmn:sequenceFlow id="f_g_sim_t_dup" name="Yes" sourceRef="g_sim" targetRef="t_dup"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_sim=="yes"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_sim_m_eval" name="No" sourceRef="g_sim" targetRef="m_eval"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_sim=="no"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_dup_g_rule" sourceRef="t_dup" targetRef="g_rule"/>
+    <bpmn:sequenceFlow id="f_g_rule_t_mod" name="Modify topic" sourceRef="g_rule" targetRef="t_mod"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_rule=="modify_topic"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_mod_t_sim" name="Recheck" sourceRef="t_mod" targetRef="t_sim"/>
+    <bpmn:sequenceFlow id="f_g_rule_m_eval" name="Acceptable (false match)" sourceRef="g_rule" targetRef="m_eval"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_rule=="acceptable_false_match"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_rule_t_rej" name="Plagiarised: reject" sourceRef="g_rule" targetRef="t_rej"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_rule=="plagiarised_reject"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_m_eval_t_eval" sourceRef="m_eval" targetRef="t_eval"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${m_eval=="ok"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_eval_m_dec" sourceRef="t_eval" targetRef="m_dec"/>
+    <bpmn:sequenceFlow id="f_m_dec_g_dec" sourceRef="m_dec" targetRef="g_dec"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${m_dec=="ok"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_b_rem_t_rem" name="7-day reminder" sourceRef="b_rem" targetRef="t_rem"/>
+    <bpmn:sequenceFlow id="f_t_rem_end_rem" sourceRef="t_rem" targetRef="end_rem"/>
+    <bpmn:sequenceFlow id="f_b_hod_e_esc" sourceRef="b_hod" targetRef="e_esc"/>
+    <bpmn:sequenceFlow id="f_e_esc_t_hod" sourceRef="e_esc" targetRef="t_hod"/>
+    <bpmn:sequenceFlow id="f_t_hod_m_dec" sourceRef="t_hod" targetRef="m_dec"/>
+    <bpmn:sequenceFlow id="f_g_dec_sub" name="Approve" sourceRef="g_dec" targetRef="sub"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_dec=="approve"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_dec_g_cyc" name="Revise" sourceRef="g_dec" targetRef="g_cyc"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_dec=="revise"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_dec_t_rej" name="Reject" sourceRef="g_dec" targetRef="t_rej"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_dec=="reject"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_cyc_t_rev" name="Yes" sourceRef="g_cyc" targetRef="t_rev"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_cyc=="yes"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_cyc_t_eval" name="No: final-decision round" sourceRef="g_cyc" targetRef="t_eval"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_cyc=="no_final_decision_round"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_rev_m_eval" sourceRef="t_rev" targetRef="m_eval"/>
+    <bpmn:sequenceFlow id="f_b_revt_end_revl" sourceRef="b_revt" targetRef="end_revl"/>
+    <bpmn:sequenceFlow id="f_t_rej_g_new" sourceRef="t_rej" targetRef="g_new"/>
+    <bpmn:sequenceFlow id="f_g_new_t_new" name="Yes" sourceRef="g_new" targetRef="t_new"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_new=="yes"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_new_end_rej" name="No" sourceRef="g_new" targetRef="end_rej"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_new=="no"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_new_t_val" name="Resubmit" sourceRef="t_new" targetRef="t_val"/>
+    <bpmn:sequenceFlow id="f_sub_sub2" sourceRef="sub" targetRef="sub2"/>
+    <bpmn:sequenceFlow id="f_sub2_end_ok" sourceRef="sub2" targetRef="end_ok"/>
+    <bpmn:sequenceFlow id="f_b_wd_e_comp" sourceRef="b_wd" targetRef="e_comp"/>
+    <bpmn:sequenceFlow id="f_e_comp_g_who" sourceRef="e_comp" targetRef="g_who"/>
+    <bpmn:sequenceFlow id="f_g_who_sub" name="Guide withdrew: reallocate" sourceRef="g_who" targetRef="sub"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_who=="guide_withdrew_reallocate"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_who_end_wd" name="Team withdrew" sourceRef="g_who" targetRef="end_wd"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_who=="team_withdrew"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_b_err_g_retry" sourceRef="b_err" targetRef="g_retry"/>
+    <bpmn:sequenceFlow id="f_g_retry_sub2" name="Yes: retry" sourceRef="g_retry" targetRef="sub2"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_retry=="yes_retry"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_g_retry_t_manual" name="No" sourceRef="g_retry" targetRef="t_manual"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${g_retry=="no"}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_t_manual_end_ok2" sourceRef="t_manual" targetRef="end_ok2"/>
+    <bpmn:association id="as_b_comp_t_relc" associationDirection="One" sourceRef="b_comp" targetRef="t_relc"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_A1"><bpmndi:BPMNPlane id="Plane_A1" bpmnElement="Collab_A1">
+    <bpmndi:BPMNShape id="S_P_main" bpmnElement="P_main" isHorizontal="true"><dc:Bounds x="0" y="0" width="3505" height="1020"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_Lane_stu" bpmnElement="Lane_stu" isHorizontal="true"><dc:Bounds x="30" y="0" width="3475" height="190"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_Lane_coo" bpmnElement="Lane_coo" isHorizontal="true"><dc:Bounds x="30" y="190" width="3475" height="190"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_Lane_com" bpmnElement="Lane_com" isHorizontal="true"><dc:Bounds x="30" y="380" width="3475" height="190"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_Lane_sys" bpmnElement="Lane_sys" isHorizontal="true"><dc:Bounds x="30" y="570" width="3475" height="450"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_P_guide" bpmnElement="P_guide" isHorizontal="true"><dc:Bounds x="0" y="1080" width="3505" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_start" bpmnElement="start"><dc:Bounds x="92" y="37" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_submit" bpmnElement="t_submit"><dc:Bounds x="185" y="20" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_late" bpmnElement="b_late"><dc:Bounds x="217" y="72" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_late" bpmnElement="t_late"><dc:Bounds x="185" y="110" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_latedec" bpmnElement="t_latedec"><dc:Bounds x="185" y="210" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_late" bpmnElement="g_late" isMarkerVisible="true"><dc:Bounds x="212" y="312" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_lapsed" bpmnElement="end_lapsed"><dc:Bounds x="304" y="317" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_val" bpmnElement="t_val"><dc:Bounds x="310" y="590" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_val" bpmnElement="g_val" isMarkerVisible="true"><dc:Bounds x="462" y="602" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_team" bpmnElement="t_team"><dc:Bounds x="560" y="590" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_team" bpmnElement="end_team"><dc:Bounds x="592" y="697" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_cnt" bpmnElement="g_cnt" isMarkerVisible="true"><dc:Bounds x="462" y="692" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_esc" bpmnElement="t_esc"><dc:Bounds x="548" y="300" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_inv" bpmnElement="end_inv"><dc:Bounds x="686" y="317" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_screen" bpmnElement="t_screen"><dc:Bounds x="560" y="210" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_sim" bpmnElement="t_sim"><dc:Bounds x="685" y="590" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_sim" bpmnElement="g_sim" isMarkerVisible="true"><dc:Bounds x="837" y="602" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_dup" bpmnElement="t_dup"><dc:Bounds x="810" y="300" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_rule" bpmnElement="g_rule" isMarkerVisible="true"><dc:Bounds x="962" y="312" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_mod" bpmnElement="t_mod"><dc:Bounds x="935" y="110" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_m_eval" bpmnElement="m_eval" isMarkerVisible="true"><dc:Bounds x="1087" y="412" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_eval" bpmnElement="t_eval"><dc:Bounds x="1148" y="400" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_rem" bpmnElement="b_rem"><dc:Bounds x="1148" y="452" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_hod" bpmnElement="b_hod"><dc:Bounds x="1212" y="452" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_rem" bpmnElement="t_rem"><dc:Bounds x="1116" y="680" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_rem" bpmnElement="end_rem"><dc:Bounds x="1292" y="697" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_e_esc" bpmnElement="e_esc"><dc:Bounds x="1212" y="507" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_hod" bpmnElement="t_hod"><dc:Bounds x="1272" y="490" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_m_dec" bpmnElement="m_dec" isMarkerVisible="true"><dc:Bounds x="1300" y="412" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_dec" bpmnElement="g_dec" isMarkerVisible="true"><dc:Bounds x="1400" y="412" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_cyc" bpmnElement="g_cyc" isMarkerVisible="true"><dc:Bounds x="1400" y="312" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_rev" bpmnElement="t_rev"><dc:Bounds x="1060" y="110" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_revt" bpmnElement="b_revt"><dc:Bounds x="1127" y="162" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_revl" bpmnElement="end_revl"><dc:Bounds x="1136" y="227" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_rej" bpmnElement="t_rej"><dc:Bounds x="1372" y="590" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_new" bpmnElement="g_new" isMarkerVisible="true"><dc:Bounds x="1537" y="602" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_new" bpmnElement="t_new"><dc:Bounds x="1510" y="20" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_rej" bpmnElement="end_rej"><dc:Bounds x="1542" y="697" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_sub" bpmnElement="sub" isExpanded="true"><dc:Bounds x="1648" y="580" width="1010" height="330"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_i_start" bpmnElement="i_start"><dc:Bounds x="1674" y="612" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_rule" bpmnElement="t_rule"><dc:Bounds x="1758" y="595" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_ok" bpmnElement="g_ok" isMarkerVisible="true"><dc:Bounds x="1900" y="607" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_resv" bpmnElement="t_resv"><dc:Bounds x="1988" y="595" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_req" bpmnElement="t_req"><dc:Bounds x="2102" y="595" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_wait" bpmnElement="g_wait"><dc:Bounds x="2244" y="607" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_e_to" bpmnElement="e_to"><dc:Bounds x="2364" y="612" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_e_resp" bpmnElement="e_resp"><dc:Bounds x="2364" y="697" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_excl" bpmnElement="t_excl"><dc:Bounds x="2448" y="595" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_acc" bpmnElement="g_acc" isMarkerVisible="true"><dc:Bounds x="2474" y="692" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_i_end" bpmnElement="i_end"><dc:Bounds x="2594" y="697" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_att" bpmnElement="g_att" isMarkerVisible="true"><dc:Bounds x="2590" y="607" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_man" bpmnElement="t_man"><dc:Bounds x="1872" y="680" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_man" bpmnElement="g_man" isMarkerVisible="true"><dc:Bounds x="2014" y="692" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_e_wl" bpmnElement="e_wl"><dc:Bounds x="2112" y="697" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_comp" bpmnElement="b_comp"><dc:Bounds x="2054" y="647" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_relc" bpmnElement="t_relc"><dc:Bounds x="2022" y="765" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_wd" bpmnElement="b_wd"><dc:Bounds x="1830" y="892" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_e_comp" bpmnElement="e_comp"><dc:Bounds x="1830" y="947" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_who" bpmnElement="g_who" isMarkerVisible="true"><dc:Bounds x="1954" y="942" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_wd" bpmnElement="end_wd"><dc:Bounds x="2090" y="947" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_sub2" bpmnElement="sub2" isExpanded="true"><dc:Bounds x="2708" y="580" width="440" height="130"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_r_start" bpmnElement="r_start"><dc:Bounds x="2734" y="612" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_r_rec" bpmnElement="r_rec"><dc:Bounds x="2818" y="595" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_r_not" bpmnElement="r_not"><dc:Bounds x="2932" y="595" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_r_end" bpmnElement="r_end"><dc:Bounds x="3080" y="612" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_b_err" bpmnElement="b_err"><dc:Bounds x="2810" y="692" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_g_retry" bpmnElement="g_retry" isMarkerVisible="true"><dc:Bounds x="2804" y="797" width="46" height="46"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_ok" bpmnElement="end_ok"><dc:Bounds x="3190" y="627" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_t_manual" bpmnElement="t_manual"><dc:Bounds x="3238" y="210" width="100" height="70"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="S_end_ok2" bpmnElement="end_ok2"><dc:Bounds x="3390" y="227" width="36" height="36"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNEdge id="E_f_start_t_submit" bpmnElement="f_start_t_submit">
+      <di:waypoint x="128" y="55"/>
+      <di:waypoint x="185" y="55"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_submit_t_val" bpmnElement="f_t_submit_t_val">
+      <di:waypoint x="285" y="55"/>
+      <di:waypoint x="360" y="55"/>
+      <di:waypoint x="360" y="590"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_b_late_t_late" bpmnElement="f_b_late_t_late">
+      <di:waypoint x="235" y="108"/>
+      <di:waypoint x="235" y="110"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_late_t_latedec" bpmnElement="f_t_late_t_latedec">
+      <di:waypoint x="235" y="180"/>
+      <di:waypoint x="235" y="210"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_latedec_g_late" bpmnElement="f_t_latedec_g_late">
+      <di:waypoint x="235" y="280"/>
+      <di:waypoint x="235" y="312"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_late_t_submit" bpmnElement="f_g_late_t_submit">
+      <di:waypoint x="212" y="335"/>
+      <di:waypoint x="166" y="335"/>
+      <di:waypoint x="166" y="55"/>
+      <di:waypoint x="185" y="55"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_late_end_lapsed" bpmnElement="f_g_late_end_lapsed">
+      <di:waypoint x="258" y="335"/>
+      <di:waypoint x="304" y="335"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_val_g_val" bpmnElement="f_t_val_g_val">
+      <di:waypoint x="410" y="625"/>
+      <di:waypoint x="462" y="625"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_val_t_screen" bpmnElement="f_g_val_t_screen">
+      <di:waypoint x="485" y="602"/>
+      <di:waypoint x="485" y="245"/>
+      <di:waypoint x="560" y="245"/>
+      <di:waypoint x="560" y="245"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_val_g_cnt" bpmnElement="f_g_val_g_cnt">
+      <di:waypoint x="485" y="648"/>
+      <di:waypoint x="485" y="692"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_val_t_team" bpmnElement="f_g_val_t_team">
+      <di:waypoint x="508" y="625"/>
+      <di:waypoint x="560" y="625"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_team_end_team" bpmnElement="f_t_team_end_team">
+      <di:waypoint x="610" y="660"/>
+      <di:waypoint x="610" y="697"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_cnt_t_submit" bpmnElement="f_g_cnt_t_submit">
+      <di:waypoint x="485" y="738"/>
+      <di:waypoint x="485" y="785"/>
+      <di:waypoint x="166" y="785"/>
+      <di:waypoint x="166" y="55"/>
+      <di:waypoint x="185" y="55"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_cnt_t_esc" bpmnElement="f_g_cnt_t_esc">
+      <di:waypoint x="508" y="715"/>
+      <di:waypoint x="535" y="715"/>
+      <di:waypoint x="535" y="335"/>
+      <di:waypoint x="548" y="335"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_esc_end_inv" bpmnElement="f_t_esc_end_inv">
+      <di:waypoint x="648" y="335"/>
+      <di:waypoint x="686" y="335"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_screen_t_sim" bpmnElement="f_t_screen_t_sim">
+      <di:waypoint x="660" y="245"/>
+      <di:waypoint x="666" y="245"/>
+      <di:waypoint x="666" y="625"/>
+      <di:waypoint x="685" y="625"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_sim_g_sim" bpmnElement="f_t_sim_g_sim">
+      <di:waypoint x="785" y="625"/>
+      <di:waypoint x="837" y="625"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_sim_t_dup" bpmnElement="f_g_sim_t_dup">
+      <di:waypoint x="860" y="602"/>
+      <di:waypoint x="860" y="370"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_sim_m_eval" bpmnElement="f_g_sim_m_eval">
+      <di:waypoint x="883" y="625"/>
+      <di:waypoint x="935" y="625"/>
+      <di:waypoint x="935" y="435"/>
+      <di:waypoint x="1087" y="435"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_dup_g_rule" bpmnElement="f_t_dup_g_rule">
+      <di:waypoint x="910" y="335"/>
+      <di:waypoint x="962" y="335"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_rule_t_mod" bpmnElement="f_g_rule_t_mod">
+      <di:waypoint x="985" y="312"/>
+      <di:waypoint x="985" y="180"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_mod_t_sim" bpmnElement="f_t_mod_t_sim">
+      <di:waypoint x="935" y="145"/>
+      <di:waypoint x="735" y="145"/>
+      <di:waypoint x="735" y="590"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_rule_m_eval" bpmnElement="f_g_rule_m_eval">
+      <di:waypoint x="985" y="358"/>
+      <di:waypoint x="985" y="435"/>
+      <di:waypoint x="1087" y="435"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_rule_t_rej" bpmnElement="f_g_rule_t_rej">
+      <di:waypoint x="1008" y="335"/>
+      <di:waypoint x="1062" y="335"/>
+      <di:waypoint x="1062" y="625"/>
+      <di:waypoint x="1372" y="625"/>
+      <di:waypoint x="1372" y="625"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_m_eval_t_eval" bpmnElement="f_m_eval_t_eval">
+      <di:waypoint x="1133" y="435"/>
+      <di:waypoint x="1148" y="435"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_eval_m_dec" bpmnElement="f_t_eval_m_dec">
+      <di:waypoint x="1248" y="435"/>
+      <di:waypoint x="1300" y="435"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_m_dec_g_dec" bpmnElement="f_m_dec_g_dec">
+      <di:waypoint x="1346" y="435"/>
+      <di:waypoint x="1400" y="435"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_b_rem_t_rem" bpmnElement="f_b_rem_t_rem">
+      <di:waypoint x="1166" y="488"/>
+      <di:waypoint x="1166" y="680"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_rem_end_rem" bpmnElement="f_t_rem_end_rem">
+      <di:waypoint x="1216" y="715"/>
+      <di:waypoint x="1292" y="715"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_b_hod_e_esc" bpmnElement="f_b_hod_e_esc">
+      <di:waypoint x="1230" y="488"/>
+      <di:waypoint x="1230" y="507"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_e_esc_t_hod" bpmnElement="f_e_esc_t_hod">
+      <di:waypoint x="1248" y="525"/>
+      <di:waypoint x="1272" y="525"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_hod_m_dec" bpmnElement="f_t_hod_m_dec">
+      <di:waypoint x="1322" y="490"/>
+      <di:waypoint x="1322" y="458"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_dec_sub" bpmnElement="f_g_dec_sub">
+      <di:waypoint x="1446" y="435"/>
+      <di:waypoint x="1610" y="435"/>
+      <di:waypoint x="1610" y="745"/>
+      <di:waypoint x="1648" y="745"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_dec_g_cyc" bpmnElement="f_g_dec_g_cyc">
+      <di:waypoint x="1422" y="412"/>
+      <di:waypoint x="1422" y="358"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_dec_t_rej" bpmnElement="f_g_dec_t_rej">
+      <di:waypoint x="1422" y="458"/>
+      <di:waypoint x="1422" y="590"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_cyc_t_rev" bpmnElement="f_g_cyc_t_rev">
+      <di:waypoint x="1422" y="312"/>
+      <di:waypoint x="1422" y="145"/>
+      <di:waypoint x="1160" y="145"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_cyc_t_eval" bpmnElement="f_g_cyc_t_eval">
+      <di:waypoint x="1400" y="335"/>
+      <di:waypoint x="1198" y="335"/>
+      <di:waypoint x="1198" y="400"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_rev_m_eval" bpmnElement="f_t_rev_m_eval">
+      <di:waypoint x="1110" y="180"/>
+      <di:waypoint x="1110" y="435"/>
+      <di:waypoint x="1110" y="412"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_b_revt_end_revl" bpmnElement="f_b_revt_end_revl">
+      <di:waypoint x="1145" y="198"/>
+      <di:waypoint x="1145" y="245"/>
+      <di:waypoint x="1136" y="245"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_rej_g_new" bpmnElement="f_t_rej_g_new">
+      <di:waypoint x="1472" y="625"/>
+      <di:waypoint x="1537" y="625"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_new_t_new" bpmnElement="f_g_new_t_new">
+      <di:waypoint x="1560" y="602"/>
+      <di:waypoint x="1560" y="90"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_new_end_rej" bpmnElement="f_g_new_end_rej">
+      <di:waypoint x="1560" y="648"/>
+      <di:waypoint x="1560" y="697"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_new_t_val" bpmnElement="f_t_new_t_val">
+      <di:waypoint x="1560" y="20"/>
+      <di:waypoint x="1560" y="55"/>
+      <di:waypoint x="360" y="55"/>
+      <di:waypoint x="360" y="590"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_i_start_t_rule" bpmnElement="f_i_start_t_rule">
+      <di:waypoint x="1710" y="630"/>
+      <di:waypoint x="1758" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_rule_g_ok" bpmnElement="f_t_rule_g_ok">
+      <di:waypoint x="1858" y="630"/>
+      <di:waypoint x="1900" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_ok_t_resv" bpmnElement="f_g_ok_t_resv">
+      <di:waypoint x="1946" y="630"/>
+      <di:waypoint x="1988" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_resv_t_req" bpmnElement="f_t_resv_t_req">
+      <di:waypoint x="2088" y="630"/>
+      <di:waypoint x="2102" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_req_g_wait" bpmnElement="f_t_req_g_wait">
+      <di:waypoint x="2202" y="630"/>
+      <di:waypoint x="2244" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_wait_e_to" bpmnElement="f_g_wait_e_to">
+      <di:waypoint x="2290" y="630"/>
+      <di:waypoint x="2364" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_wait_e_resp" bpmnElement="f_g_wait_e_resp">
+      <di:waypoint x="2268" y="653"/>
+      <di:waypoint x="2268" y="715"/>
+      <di:waypoint x="2364" y="715"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_e_resp_g_acc" bpmnElement="f_e_resp_g_acc">
+      <di:waypoint x="2400" y="715"/>
+      <di:waypoint x="2474" y="715"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_e_to_t_excl" bpmnElement="f_e_to_t_excl">
+      <di:waypoint x="2400" y="630"/>
+      <di:waypoint x="2448" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_acc_i_end" bpmnElement="f_g_acc_i_end">
+      <di:waypoint x="2520" y="715"/>
+      <di:waypoint x="2594" y="715"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_acc_t_excl" bpmnElement="f_g_acc_t_excl">
+      <di:waypoint x="2498" y="692"/>
+      <di:waypoint x="2498" y="665"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_excl_g_att" bpmnElement="f_t_excl_g_att">
+      <di:waypoint x="2548" y="630"/>
+      <di:waypoint x="2590" y="630"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_att_t_rule" bpmnElement="f_g_att_t_rule">
+      <di:waypoint x="2612" y="653"/>
+      <di:waypoint x="2612" y="865"/>
+      <di:waypoint x="1808" y="865"/>
+      <di:waypoint x="1808" y="665"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_att_t_man" bpmnElement="f_g_att_t_man">
+      <di:waypoint x="2612" y="653"/>
+      <di:waypoint x="2612" y="885"/>
+      <di:waypoint x="1922" y="885"/>
+      <di:waypoint x="1922" y="750"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_ok_t_man" bpmnElement="f_g_ok_t_man">
+      <di:waypoint x="1922" y="653"/>
+      <di:waypoint x="1922" y="680"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_man_g_man" bpmnElement="f_t_man_g_man">
+      <di:waypoint x="1972" y="715"/>
+      <di:waypoint x="2014" y="715"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_man_t_resv" bpmnElement="f_g_man_t_resv">
+      <di:waypoint x="2038" y="692"/>
+      <di:waypoint x="2038" y="665"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_man_e_wl" bpmnElement="f_g_man_e_wl">
+      <di:waypoint x="2060" y="715"/>
+      <di:waypoint x="2112" y="715"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_e_wl_t_rule" bpmnElement="f_e_wl_t_rule">
+      <di:waypoint x="2130" y="733"/>
+      <di:waypoint x="2130" y="865"/>
+      <di:waypoint x="1808" y="865"/>
+      <di:waypoint x="1808" y="665"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_sub_sub2" bpmnElement="f_sub_sub2">
+      <di:waypoint x="2658" y="745"/>
+      <di:waypoint x="2686" y="745"/>
+      <di:waypoint x="2686" y="645"/>
+      <di:waypoint x="2708" y="645"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_sub2_end_ok" bpmnElement="f_sub2_end_ok">
+      <di:waypoint x="3148" y="645"/>
+      <di:waypoint x="3190" y="645"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_b_wd_e_comp" bpmnElement="f_b_wd_e_comp">
+      <di:waypoint x="1848" y="928"/>
+      <di:waypoint x="1848" y="947"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_e_comp_g_who" bpmnElement="f_e_comp_g_who">
+      <di:waypoint x="1866" y="965"/>
+      <di:waypoint x="1954" y="965"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_who_sub" bpmnElement="f_g_who_sub">
+      <di:waypoint x="1978" y="942"/>
+      <di:waypoint x="1978" y="910"/>
+      <di:waypoint x="1978" y="910"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_who_end_wd" bpmnElement="f_g_who_end_wd">
+      <di:waypoint x="2000" y="965"/>
+      <di:waypoint x="2090" y="965"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_b_err_g_retry" bpmnElement="f_b_err_g_retry">
+      <di:waypoint x="2828" y="728"/>
+      <di:waypoint x="2828" y="797"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_retry_sub2" bpmnElement="f_g_retry_sub2">
+      <di:waypoint x="2804" y="820"/>
+      <di:waypoint x="2768" y="820"/>
+      <di:waypoint x="2768" y="710"/>
+      <di:waypoint x="2768" y="710"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_g_retry_t_manual" bpmnElement="f_g_retry_t_manual">
+      <di:waypoint x="2850" y="820"/>
+      <di:waypoint x="3288" y="820"/>
+      <di:waypoint x="3288" y="280"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_f_t_manual_end_ok2" bpmnElement="f_t_manual_end_ok2">
+      <di:waypoint x="3338" y="245"/>
+      <di:waypoint x="3390" y="245"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_m_t_req_P_guide" bpmnElement="m_t_req_P_guide">
+      <di:waypoint x="2182" y="665"/>
+      <di:waypoint x="2182" y="1080"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_m_P_guide_e_resp" bpmnElement="m_P_guide_e_resp">
+      <di:waypoint x="2382" y="1080"/>
+      <di:waypoint x="2382" y="733"/>
+    </bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="E_as_b_comp_t_relc" bpmnElement="as_b_comp_t_relc">
+      <di:waypoint x="2072" y="683"/>
+      <di:waypoint x="2072" y="765"/>
+    </bpmndi:BPMNEdge>
+  </bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>

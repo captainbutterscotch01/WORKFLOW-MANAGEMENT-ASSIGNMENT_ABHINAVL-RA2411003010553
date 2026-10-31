@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_HospitalTriage" name="Educational triage only" namespace="https://srm.edu/educational/dmn">
+  <decision id="HospitalTriage" name="Educational triage only">
+    <decisionTable id="HospitalTriage_table" hitPolicy="FIRST">
+      <input id="HospitalTriage_input0" label="urgentIndicator">
+        <inputExpression id="HospitalTriage_exp0" typeRef="boolean">
+          <text>urgentIndicator</text>
+        </inputExpression>
+      </input>
+      <input id="HospitalTriage_input1" label="priorityIndicator">
+        <inputExpression id="HospitalTriage_exp1" typeRef="boolean">
+          <text>priorityIndicator</text>
+        </inputExpression>
+      </input>
+      <output id="HospitalTriage_output" name="urgencyCategory" label="urgencyCategory" typeRef="string"/>
+      <rule id="HospitalTriage_rule0">
+        <inputEntry id="HospitalTriage_r0_i0">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="HospitalTriage_r0_i1">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="HospitalTriage_r0_o">
+          <text>"Urgent Assessment"</text>
+        </outputEntry>
+      </rule>
+      <rule id="HospitalTriage_rule1">
+        <inputEntry id="HospitalTriage_r1_i0">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="HospitalTriage_r1_i1">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="HospitalTriage_r1_o">
+          <text>"Priority Review"</text>
+        </outputEntry>
+      </rule>
+      <rule id="HospitalTriage_rule2">
+        <inputEntry id="HospitalTriage_r2_i0">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="HospitalTriage_r2_i1">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="HospitalTriage_r2_o">
+          <text>"Routine"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"><dmndi:DMNDiagram id="diagram_HospitalTriage"><dmndi:DMNShape id="shape_HospitalTriage" dmnElementRef="HospitalTriage"><dc:Bounds x="160" y="100" width="220" height="90"/></dmndi:DMNShape></dmndi:DMNDiagram></dmndi:DMNDI></definitions>

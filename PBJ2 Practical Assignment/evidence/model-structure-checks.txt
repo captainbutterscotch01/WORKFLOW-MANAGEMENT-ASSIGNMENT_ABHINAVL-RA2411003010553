@@ -1,0 +1,8 @@
+lab1-loan.bpmn: references, reachability, gateway conditions and deployment bindings PASS
+lab2-order.bpmn: references, reachability, gateway conditions and deployment bindings PASS
+lab3-hospital.bpmn: references, reachability, gateway conditions and deployment bindings PASS
+UrgentAssessment.form: unique form keys PASS
+HospitalReview.form: unique form keys PASS
+OrderReview.form: unique form keys PASS
+LoanReview.form: unique form keys PASS
+NoSlotReview.form: unique form keys PASS

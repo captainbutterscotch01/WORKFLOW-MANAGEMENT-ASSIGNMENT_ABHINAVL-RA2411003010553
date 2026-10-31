@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Lab1_Loan" targetNamespace="https://srm.edu/educational/labs" exporter="Camunda lab model generator" exporterVersion="1.0">
+  <bpmn:process id="Lab1_Loan" name="Lab 1 - Loan approval" isExecutable="true">
+    <bpmn:startEvent id="Start" name="Application received">
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Validate" name="Validate applicant">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="loan-validate" retries="1"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Valid" name="Valid input?" default="Flow_7">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Credit" name="REST credit assessment">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" retries="1"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type"/>
+          <zeebe:input source="POST" target="method"/>
+          <zeebe:input source="=mockBaseUrl + &quot;/mock/credit&quot;" target="url"/>
+          <zeebe:input source="={&quot;Content-Type&quot;: &quot;application/json&quot;}" target="headers"/>
+          <zeebe:input source="={caseId:caseId,applicantRef:applicantRef,creditProfile:creditProfile}" target="body"/>
+          <zeebe:input source="=5" target="connectionTimeoutInSeconds"/>
+          <zeebe:input source="=10" target="readTimeoutInSeconds"/>
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="={creditScore:response.body.score,creditStatus:response.body.assessmentStatus}"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="Decision" name="Evaluate loan rules">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="LoanDecision" resultVariable="loanDecision" bindingType="deployment"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="Route" name="Loan decision?" default="Flow_12">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Review" name="Manual loan review">
+      <bpmn:extensionElements>
+        <zeebe:userTask/>
+        <zeebe:assignmentDefinition assignee="=reviewer"/>
+        <zeebe:formDefinition formId="LoanReview" bindingType="deployment"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ReviewRoute" name="Reviewer approved?" default="Flow_15">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Approved" name="Record Approved">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="record-outcome" retries="1"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&quot;Approved&quot;" target="finalStatus"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="ApprovedEnd" name="Approved">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Approved" targetRef="ApprovedEnd" name=""/>
+    <bpmn:serviceTask id="Rejected" name="Record Rejected">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="record-outcome" retries="1"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&quot;Rejected&quot;" target="finalStatus"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="RejectedEnd" name="Rejected">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Rejected" targetRef="RejectedEnd" name=""/>
+    <bpmn:serviceTask id="Invalid" name="Record Invalid application">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="record-outcome" retries="1"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&quot;Invalid application&quot;" target="finalStatus"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="InvalidEnd" name="Invalid application">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Invalid" targetRef="InvalidEnd" name=""/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Start" targetRef="Validate" name=""/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Validate" targetRef="Valid" name=""/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Valid" targetRef="Credit" name="Valid">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=validationPassed = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Valid" targetRef="Invalid" name="Invalid"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Credit" targetRef="Decision" name=""/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Decision" targetRef="Route" name=""/>
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Route" targetRef="Approved" name="Approved">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanDecision = "Approved"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Route" targetRef="Rejected" name="Rejected">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanDecision = "Rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Route" targetRef="Review" name="Manual / unexpected"/>
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Review" targetRef="ReviewRoute" name=""/>
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="ReviewRoute" targetRef="Approved" name="Approve">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=reviewDecision = "Approve"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="ReviewRoute" targetRef="Rejected" name="Reject"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Lab1_Loan">
+    <bpmndi:BPMNPlane id="Plane_Lab1_Loan" bpmnElement="Lab1_Loan">
+      <bpmndi:BPMNShape id="Start_di" bpmnElement="Start">
+        <dc:Bounds x="357" y="30" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="312" y="71" width="126" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Validate_di" bpmnElement="Validate">
+        <dc:Bounds x="300" y="140" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Valid_di" bpmnElement="Valid">
+        <dc:Bounds x="350" y="270" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="325" width="140" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Credit_di" bpmnElement="Credit">
+        <dc:Bounds x="300" y="390" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Decision_di" bpmnElement="Decision">
+        <dc:Bounds x="300" y="530" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Route_di" bpmnElement="Route">
+        <dc:Bounds x="350" y="670" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="725" width="140" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Review_di" bpmnElement="Review">
+        <dc:Bounds x="600" y="800" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReviewRoute_di" bpmnElement="ReviewRoute">
+        <dc:Bounds x="650" y="940" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="605" y="995" width="140" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Approved_di" bpmnElement="Approved">
+        <dc:Bounds x="300" y="1080" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ApprovedEnd_di" bpmnElement="ApprovedEnd">
+        <dc:Bounds x="357" y="1210" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="312" y="1251" width="126" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Rejected_di" bpmnElement="Rejected">
+        <dc:Bounds x="40" y="1080" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="RejectedEnd_di" bpmnElement="RejectedEnd">
+        <dc:Bounds x="97" y="1210" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="52" y="1251" width="126" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Invalid_di" bpmnElement="Invalid">
+        <dc:Bounds x="40" y="390" width="150" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="InvalidEnd_di" bpmnElement="InvalidEnd">
+        <dc:Bounds x="97" y="520" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="52" y="561" width="126" height="34"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="375.0" y="1156.0"/><di:waypoint x="375.0" y="1210.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="115.0" y="1156.0"/><di:waypoint x="115.0" y="1210.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="115.0" y="466.0"/><di:waypoint x="115.0" y="520.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="375.0" y="66.0"/><di:waypoint x="375.0" y="140.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="375.0" y="216.0"/><di:waypoint x="375.0" y="270.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="375.0" y="320.0"/><di:waypoint x="375.0" y="390.0"/><bpmndi:BPMNLabel><dc:Bounds x="402.0" y="344.0" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="350.0" y="295.0"/><di:waypoint x="115.0" y="295.0"/><di:waypoint x="115.0" y="390.0"/><bpmndi:BPMNLabel><dc:Bounds x="177.5" y="271.0" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="375.0" y="466.0"/><di:waypoint x="375.0" y="530.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="375.0" y="606.0"/><di:waypoint x="375.0" y="670.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="375.0" y="720.0"/><di:waypoint x="375.0" y="1080.0"/><bpmndi:BPMNLabel><dc:Bounds x="402.0" y="889.0" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="350.0" y="695.0"/><di:waypoint x="115.0" y="695.0"/><di:waypoint x="115.0" y="1080.0"/><bpmndi:BPMNLabel><dc:Bounds x="177.5" y="671.0" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="400.0" y="695.0"/><di:waypoint x="675.0" y="695.0"/><di:waypoint x="675.0" y="800.0"/><bpmndi:BPMNLabel><dc:Bounds x="482.5" y="671.0" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="675.0" y="876.0"/><di:waypoint x="675.0" y="940.0"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="650.0" y="965.0"/><di:waypoint x="375.0" y="965.0"/><di:waypoint x="375.0" y="1080.0"/><bpmndi:BPMNLabel><dc:Bounds x="457.5" y="941.0" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="675" y="990"/><di:waypoint x="675" y="1030"/><di:waypoint x="115" y="1030"/><di:waypoint x="115" y="1080"/><bpmndi:BPMNLabel><dc:Bounds x="340" y="1004" width="110" height="28"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

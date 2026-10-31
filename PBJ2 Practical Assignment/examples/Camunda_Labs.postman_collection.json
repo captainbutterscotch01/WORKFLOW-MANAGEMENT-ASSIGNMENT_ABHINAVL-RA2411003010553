@@ -1,0 +1,565 @@
+{
+  "info": {
+    "name": "SRM Camunda 8 Labs 1-3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8090"
+    }
+  ],
+  "item": [
+    {
+      "name": "Deploy all models and forms",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/deploy"
+      }
+    },
+    {
+      "name": "L1-approved - Approved",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L1-approved\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 50000,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"good\"\n}"
+        }
+      }
+    },
+    {
+      "name": "L2-rejected - Rejected",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L2-rejected\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 50000,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"poor\"\n}"
+        }
+      }
+    },
+    {
+      "name": "L3-manual - Manual loan review; Approved after reviewer approval",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L3-manual\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 50000,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"borderline\"\n}"
+        }
+      }
+    },
+    {
+      "name": "L4-credit-error - enable failure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/credit/L4-credit-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": true}"
+        }
+      }
+    },
+    {
+      "name": "L4-credit-error - clear failure (then retry in Operate)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/credit/L4-credit-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": false}"
+        }
+      }
+    },
+    {
+      "name": "L4-credit-error - Credit connector incident; Approved after fault cleared and retry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L4-credit-error\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 50000,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"good\"\n}"
+        }
+      }
+    },
+    {
+      "name": "L5-worker-error - enable failure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/loan-worker/L5-worker-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": true}"
+        }
+      }
+    },
+    {
+      "name": "L5-worker-error - clear failure (then retry in Operate)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/loan-worker/L5-worker-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": false}"
+        }
+      }
+    },
+    {
+      "name": "L5-worker-error - Validation worker incident; Approved after fault cleared and retry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L5-worker-error\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 50000,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"good\"\n}"
+        }
+      }
+    },
+    {
+      "name": "L6-invalid - Invalid application",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L6-invalid\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 0,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"good\"\n}"
+        }
+      }
+    },
+    {
+      "name": "L7-manual-reject - Manual loan review; Rejected after reviewer rejection",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/loan",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"L7-manual-reject\",\n  \"applicantRef\": \"SYN-A001\",\n  \"applicantName\": \"Synthetic Applicant\",\n  \"age\": 30,\n  \"monthlyIncome\": 50000,\n  \"loanAmount\": 300000,\n  \"creditProfile\": \"borderline\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O1-paid - Fulfilled",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O1-paid\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P100\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O2-no-stock - Out of stock",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O2-no-stock\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P300\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O3-declined - Payment declined",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O3-declined\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P100\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_decline\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O4-high-value - High-value review; Fulfilled after reviewer approval",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O4-high-value\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P200\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O5-payment-error - enable failure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/payment/O5-payment-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": true}"
+        }
+      }
+    },
+    {
+      "name": "O5-payment-error - clear failure (then retry in Operate)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/payment/O5-payment-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": false}"
+        }
+      }
+    },
+    {
+      "name": "O5-payment-error - Payment connector incident; Fulfilled after fault cleared and retry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O5-payment-error\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P100\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O6-inventory-error - enable failure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/inventory/O6-inventory-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": true}"
+        }
+      }
+    },
+    {
+      "name": "O6-inventory-error - clear failure (then retry in Operate)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/inventory/O6-inventory-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": false}"
+        }
+      }
+    },
+    {
+      "name": "O6-inventory-error - Inventory worker incident; Fulfilled after fault cleared and retry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O6-inventory-error\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P100\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O7-review-reject - Review rejected; no payment attempted",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O7-review-reject\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P200\",\n  \"quantity\": 2,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "O8-invalid - Invalid order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/order",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"O8-invalid\",\n  \"customerRef\": \"SYN-C001\",\n  \"productId\": \"P100\",\n  \"quantity\": 1.5,\n  \"deliveryPreference\": \"Standard\",\n  \"customerCategory\": \"Standard\",\n  \"paymentToken\": \"tok_success\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H1-routine - Booked",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H1-routine\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Morning\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": false,\n  \"priorityIndicator\": false,\n  \"slotScenario\": \"available\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H2-priority - Priority staff review; Booked after continuation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H2-priority\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Morning\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": false,\n  \"priorityIndicator\": true,\n  \"slotScenario\": \"available\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H3-urgent - Immediate human assessment; Human assessment recorded after completion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H3-urgent\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Morning\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": true,\n  \"priorityIndicator\": false,\n  \"slotScenario\": \"available\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H4-no-slots - No-slot staff task; Staff follow-up required after completion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H4-no-slots\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Morning\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": false,\n  \"priorityIndicator\": false,\n  \"slotScenario\": \"none\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H5-scheduling-error - enable failure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/scheduling/H5-scheduling-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": true}"
+        }
+      }
+    },
+    {
+      "name": "H5-scheduling-error - clear failure (then retry in Operate)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/mock/faults/scheduling/H5-scheduling-error",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"enabled\": false}"
+        }
+      }
+    },
+    {
+      "name": "H5-scheduling-error - Availability worker incident; Booked after fault cleared and retry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H5-scheduling-error\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Morning\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": false,\n  \"priorityIndicator\": false,\n  \"slotScenario\": \"available\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H6-priority-refer - Priority staff review; Referred to staff",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H6-priority-refer\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Morning\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": false,\n  \"priorityIndicator\": true,\n  \"slotScenario\": \"available\"\n}"
+        }
+      }
+    },
+    {
+      "name": "H7-invalid - Invalid registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/start/hospital",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caseId\": \"H7-invalid\",\n  \"patientRef\": \"SYN-P001\",\n  \"appointmentPreference\": \"Night\",\n  \"symptomsSummary\": \"Fictional educational test case\",\n  \"urgentIndicator\": false,\n  \"priorityIndicator\": false,\n  \"slotScenario\": \"available\"\n}"
+        }
+      }
+    }
+  ]
+}

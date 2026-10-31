@@ -1,0 +1,9 @@
+{
+  "caseId": "L6-invalid",
+  "applicantRef": "SYN-A001",
+  "applicantName": "Synthetic Applicant",
+  "age": 30,
+  "monthlyIncome": 0,
+  "loanAmount": 300000,
+  "creditProfile": "good"
+}

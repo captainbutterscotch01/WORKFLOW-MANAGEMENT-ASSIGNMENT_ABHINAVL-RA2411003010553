@@ -1,0 +1,9 @@
+{
+  "caseId": "H5-scheduling-error",
+  "patientRef": "SYN-P001",
+  "appointmentPreference": "Morning",
+  "symptomsSummary": "Fictional educational test case",
+  "urgentIndicator": false,
+  "priorityIndicator": false,
+  "slotScenario": "available"
+}

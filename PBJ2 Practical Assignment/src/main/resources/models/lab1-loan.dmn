@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_LoanDecision" name="Educational loan eligibility" namespace="https://srm.edu/educational/dmn">
+  <decision id="LoanDecision" name="Educational loan eligibility">
+    <decisionTable id="LoanDecision_table" hitPolicy="FIRST">
+      <input id="LoanDecision_input0" label="age">
+        <inputExpression id="LoanDecision_exp0" typeRef="number">
+          <text>age</text>
+        </inputExpression>
+      </input>
+      <input id="LoanDecision_input1" label="monthlyIncome">
+        <inputExpression id="LoanDecision_exp1" typeRef="number">
+          <text>monthlyIncome</text>
+        </inputExpression>
+      </input>
+      <input id="LoanDecision_input2" label="creditScore">
+        <inputExpression id="LoanDecision_exp2" typeRef="number">
+          <text>creditScore</text>
+        </inputExpression>
+      </input>
+      <input id="LoanDecision_input3" label="loanAmount / monthlyIncome">
+        <inputExpression id="LoanDecision_exp3" typeRef="number">
+          <text>loanAmount / monthlyIncome</text>
+        </inputExpression>
+      </input>
+      <output id="LoanDecision_output" name="loanDecision" label="loanDecision" typeRef="string"/>
+      <rule id="LoanDecision_rule0">
+        <inputEntry id="LoanDecision_r0_i0">
+          <text>&lt; 21</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r0_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r0_i2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r0_i3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LoanDecision_r0_o">
+          <text>"Rejected"</text>
+        </outputEntry>
+      </rule>
+      <rule id="LoanDecision_rule1">
+        <inputEntry id="LoanDecision_r1_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r1_i1">
+          <text>&lt; 20000</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r1_i2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r1_i3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LoanDecision_r1_o">
+          <text>"Rejected"</text>
+        </outputEntry>
+      </rule>
+      <rule id="LoanDecision_rule2">
+        <inputEntry id="LoanDecision_r2_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r2_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r2_i2">
+          <text>&lt; 600</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r2_i3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LoanDecision_r2_o">
+          <text>"Rejected"</text>
+        </outputEntry>
+      </rule>
+      <rule id="LoanDecision_rule3">
+        <inputEntry id="LoanDecision_r3_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r3_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r3_i2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r3_i3">
+          <text>&gt; 24</text>
+        </inputEntry>
+        <outputEntry id="LoanDecision_r3_o">
+          <text>"Rejected"</text>
+        </outputEntry>
+      </rule>
+      <rule id="LoanDecision_rule4">
+        <inputEntry id="LoanDecision_r4_i0">
+          <text>&gt;= 21</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r4_i1">
+          <text>&gt;= 30000</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r4_i2">
+          <text>&gt;= 750</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r4_i3">
+          <text>&lt;= 12</text>
+        </inputEntry>
+        <outputEntry id="LoanDecision_r4_o">
+          <text>"Approved"</text>
+        </outputEntry>
+      </rule>
+      <rule id="LoanDecision_rule5">
+        <inputEntry id="LoanDecision_r5_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r5_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r5_i2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LoanDecision_r5_i3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LoanDecision_r5_o">
+          <text>"Manual Review"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"><dmndi:DMNDiagram id="diagram_LoanDecision"><dmndi:DMNShape id="shape_LoanDecision" dmnElementRef="LoanDecision"><dc:Bounds x="160" y="100" width="220" height="90"/></dmndi:DMNShape></dmndi:DMNDiagram></dmndi:DMNDI></definitions>

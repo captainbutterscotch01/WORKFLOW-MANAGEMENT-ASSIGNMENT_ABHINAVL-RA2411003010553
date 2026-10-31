@@ -1,0 +1,9 @@
+{
+  "caseId": "H3-urgent",
+  "patientRef": "SYN-P001",
+  "appointmentPreference": "Morning",
+  "symptomsSummary": "Fictional educational test case",
+  "urgentIndicator": true,
+  "priorityIndicator": false,
+  "slotScenario": "available"
+}

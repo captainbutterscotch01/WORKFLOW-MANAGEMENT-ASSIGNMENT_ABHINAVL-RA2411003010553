@@ -1,0 +1,9 @@
+{
+  "caseId": "L2-rejected",
+  "applicantRef": "SYN-A001",
+  "applicantName": "Synthetic Applicant",
+  "age": 30,
+  "monthlyIncome": 50000,
+  "loanAmount": 300000,
+  "creditProfile": "poor"
+}

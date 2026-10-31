@@ -1,0 +1,9 @@
+{
+  "caseId": "H4-no-slots",
+  "patientRef": "SYN-P001",
+  "appointmentPreference": "Morning",
+  "symptomsSummary": "Fictional educational test case",
+  "urgentIndicator": false,
+  "priorityIndicator": false,
+  "slotScenario": "none"
+}

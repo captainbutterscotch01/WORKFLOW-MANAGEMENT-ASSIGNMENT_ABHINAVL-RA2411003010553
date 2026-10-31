@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 16,
+  "id": "HospitalReview",
+  "type": "default",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "components": [
+    {
+      "type": "text",
+      "id": "intro",
+      "text": "# Priority staff review\nReview the synthetic case details before completing this task."
+    },
+    {
+      "type": "textfield",
+      "id": "case",
+      "key": "caseId",
+      "label": "Case reference",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "context_patientRef",
+      "key": "patientRef",
+      "label": "patientRef",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "context_symptomsSummary",
+      "key": "symptomsSummary",
+      "label": "symptomsSummary",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "context_appointmentPreference",
+      "key": "appointmentPreference",
+      "label": "appointmentPreference",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "context_urgencyCategory",
+      "key": "urgencyCategory",
+      "label": "urgencyCategory",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "notes",
+      "key": "reviewNotes",
+      "label": "Review notes / action taken",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "type": "radio",
+      "id": "approval",
+      "key": "reviewDecision",
+      "label": "Decision",
+      "values": [
+        {
+          "label": "Approve / continue",
+          "value": "Approve"
+        },
+        {
+          "label": "Reject / refer",
+          "value": "Reject"
+        }
+      ],
+      "validate": {
+        "required": true
+      }
+    }
+  ]
+}

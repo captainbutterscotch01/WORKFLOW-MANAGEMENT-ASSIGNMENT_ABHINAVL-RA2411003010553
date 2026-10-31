@@ -1,0 +1,284 @@
+{
+  "executedAt": "2026-10-31T02:48:32.237051+00:00",
+  "scope": "Actual HTTP calls to locally running Spring Boot mock API; Camunda client disabled. NOT workflow/connector execution.",
+  "checks": [
+    {
+      "path": "/mock/health",
+      "request": null,
+      "status": 200,
+      "response": {
+        "status": "UP"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/credit",
+      "request": {
+        "caseId": "HTTP-CREDIT",
+        "creditProfile": "good"
+      },
+      "status": 200,
+      "response": {
+        "assessmentStatus": "OK",
+        "score": 780
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/faults/credit/HTTP-CREDIT",
+      "request": {
+        "enabled": true
+      },
+      "status": 200,
+      "response": {
+        "caseId": "HTTP-CREDIT",
+        "service": "credit",
+        "enabled": true
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/credit",
+      "request": {
+        "caseId": "HTTP-CREDIT",
+        "creditProfile": "good"
+      },
+      "status": 503,
+      "response": {
+        "timestamp": "2026-10-31T02:48:32.157+00:00",
+        "status": 503,
+        "error": "Service Unavailable",
+        "path": "/mock/credit"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/faults/credit/HTTP-CREDIT",
+      "request": {
+        "enabled": false
+      },
+      "status": 200,
+      "response": {
+        "caseId": "HTTP-CREDIT",
+        "service": "credit",
+        "enabled": false
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/credit",
+      "request": {
+        "caseId": "HTTP-CREDIT",
+        "creditProfile": "good"
+      },
+      "status": 200,
+      "response": {
+        "assessmentStatus": "OK",
+        "score": 780
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/payment",
+      "request": {
+        "caseId": "HTTP-PAYMENT",
+        "paymentToken": "tok_success",
+        "orderTotal": 1000
+      },
+      "status": 200,
+      "response": {
+        "paymentStatus": "Paid",
+        "transactionRef": "SYN-PAY-HTTP-PAYMENT"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/faults/payment/HTTP-PAYMENT",
+      "request": {
+        "enabled": true
+      },
+      "status": 200,
+      "response": {
+        "caseId": "HTTP-PAYMENT",
+        "service": "payment",
+        "enabled": true
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/payment",
+      "request": {
+        "caseId": "HTTP-PAYMENT",
+        "paymentToken": "tok_success",
+        "orderTotal": 1000
+      },
+      "status": 503,
+      "response": {
+        "timestamp": "2026-10-31T02:48:32.192+00:00",
+        "status": 503,
+        "error": "Service Unavailable",
+        "path": "/mock/payment"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/faults/payment/HTTP-PAYMENT",
+      "request": {
+        "enabled": false
+      },
+      "status": 200,
+      "response": {
+        "caseId": "HTTP-PAYMENT",
+        "service": "payment",
+        "enabled": false
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/payment",
+      "request": {
+        "caseId": "HTTP-PAYMENT",
+        "paymentToken": "tok_success",
+        "orderTotal": 1000
+      },
+      "status": 200,
+      "response": {
+        "paymentStatus": "Paid",
+        "transactionRef": "SYN-PAY-HTTP-PAYMENT"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/scheduling",
+      "request": {
+        "caseId": "HTTP-SCHEDULING",
+        "appointmentPreference": "Morning",
+        "slotScenario": "available"
+      },
+      "status": 200,
+      "response": {
+        "availableSlots": [
+          "SYN-MORNING-001",
+          "SYN-MORNING-002"
+        ],
+        "slotsAvailable": true
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/faults/scheduling/HTTP-SCHEDULING",
+      "request": {
+        "enabled": true
+      },
+      "status": 200,
+      "response": {
+        "caseId": "HTTP-SCHEDULING",
+        "service": "scheduling",
+        "enabled": true
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/scheduling",
+      "request": {
+        "caseId": "HTTP-SCHEDULING",
+        "appointmentPreference": "Morning",
+        "slotScenario": "available"
+      },
+      "status": 503,
+      "response": {
+        "timestamp": "2026-10-31T02:48:32.215+00:00",
+        "status": 503,
+        "error": "Service Unavailable",
+        "path": "/mock/scheduling"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/faults/scheduling/HTTP-SCHEDULING",
+      "request": {
+        "enabled": false
+      },
+      "status": 200,
+      "response": {
+        "caseId": "HTTP-SCHEDULING",
+        "service": "scheduling",
+        "enabled": false
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/scheduling",
+      "request": {
+        "caseId": "HTTP-SCHEDULING",
+        "appointmentPreference": "Morning",
+        "slotScenario": "available"
+      },
+      "status": 200,
+      "response": {
+        "availableSlots": [
+          "SYN-MORNING-001",
+          "SYN-MORNING-002"
+        ],
+        "slotsAvailable": true
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/payment",
+      "request": {
+        "caseId": "HTTP-DECLINED",
+        "paymentToken": "tok_decline",
+        "orderTotal": 1000
+      },
+      "status": 200,
+      "response": {
+        "paymentStatus": "Declined",
+        "transactionRef": "SYN-PAY-HTTP-DECLINED"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/scheduling",
+      "request": {
+        "caseId": "HTTP-NONE",
+        "appointmentPreference": "Afternoon",
+        "slotScenario": "none"
+      },
+      "status": 200,
+      "response": {
+        "availableSlots": [],
+        "slotsAvailable": false
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/bookings",
+      "request": {
+        "caseId": "HTTP-BOOK",
+        "selectedSlot": "SYN-MORNING-001"
+      },
+      "status": 200,
+      "response": {
+        "bookingStatus": "Booked",
+        "selectedSlot": "SYN-MORNING-001",
+        "bookingReference": "SYN-BOOK-HTTP-BOOK"
+      },
+      "assertion": "PASS"
+    },
+    {
+      "path": "/mock/bookings",
+      "request": {
+        "caseId": "HTTP-BOOK",
+        "selectedSlot": "SYN-MORNING-001"
+      },
+      "status": 200,
+      "response": {
+        "bookingStatus": "Booked",
+        "selectedSlot": "SYN-MORNING-001",
+        "bookingReference": "SYN-BOOK-HTTP-BOOK"
+      },
+      "assertion": "PASS"
+    }
+  ]
+}

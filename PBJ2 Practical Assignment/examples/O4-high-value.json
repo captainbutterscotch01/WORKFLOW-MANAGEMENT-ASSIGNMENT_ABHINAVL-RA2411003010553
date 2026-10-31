@@ -1,0 +1,9 @@
+{
+  "caseId": "O4-high-value",
+  "customerRef": "SYN-C001",
+  "productId": "P200",
+  "quantity": 2,
+  "deliveryPreference": "Standard",
+  "customerCategory": "Standard",
+  "paymentToken": "tok_success"
+}

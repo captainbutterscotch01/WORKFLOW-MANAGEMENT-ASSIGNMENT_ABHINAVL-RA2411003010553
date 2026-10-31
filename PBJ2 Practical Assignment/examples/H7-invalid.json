@@ -1,0 +1,9 @@
+{
+  "caseId": "H7-invalid",
+  "patientRef": "SYN-P001",
+  "appointmentPreference": "Night",
+  "symptomsSummary": "Fictional educational test case",
+  "urgentIndicator": false,
+  "priorityIndicator": false,
+  "slotScenario": "available"
+}

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_OrderPriority" name="Delivery priority" namespace="https://srm.edu/educational/dmn">
+  <decision id="OrderPriority" name="Delivery priority">
+    <decisionTable id="OrderPriority_table" hitPolicy="FIRST">
+      <input id="OrderPriority_input0" label="orderTotal">
+        <inputExpression id="OrderPriority_exp0" typeRef="number">
+          <text>orderTotal</text>
+        </inputExpression>
+      </input>
+      <input id="OrderPriority_input1" label="customerCategory">
+        <inputExpression id="OrderPriority_exp1" typeRef="string">
+          <text>customerCategory</text>
+        </inputExpression>
+      </input>
+      <input id="OrderPriority_input2" label="deliveryPreference">
+        <inputExpression id="OrderPriority_exp2" typeRef="string">
+          <text>deliveryPreference</text>
+        </inputExpression>
+      </input>
+      <output id="OrderPriority_output" name="deliveryPriority" label="deliveryPriority" typeRef="string"/>
+      <rule id="OrderPriority_rule0">
+        <inputEntry id="OrderPriority_r0_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r0_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r0_i2">
+          <text>"Express"</text>
+        </inputEntry>
+        <outputEntry id="OrderPriority_r0_o">
+          <text>"High"</text>
+        </outputEntry>
+      </rule>
+      <rule id="OrderPriority_rule1">
+        <inputEntry id="OrderPriority_r1_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r1_i1">
+          <text>"VIP"</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r1_i2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="OrderPriority_r1_o">
+          <text>"High"</text>
+        </outputEntry>
+      </rule>
+      <rule id="OrderPriority_rule2">
+        <inputEntry id="OrderPriority_r2_i0">
+          <text>&gt;= 50000</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r2_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r2_i2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="OrderPriority_r2_o">
+          <text>"High"</text>
+        </outputEntry>
+      </rule>
+      <rule id="OrderPriority_rule3">
+        <inputEntry id="OrderPriority_r3_i0">
+          <text>&gt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r3_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r3_i2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="OrderPriority_r3_o">
+          <text>"Medium"</text>
+        </outputEntry>
+      </rule>
+      <rule id="OrderPriority_rule4">
+        <inputEntry id="OrderPriority_r4_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r4_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="OrderPriority_r4_i2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="OrderPriority_r4_o">
+          <text>"Normal"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"><dmndi:DMNDiagram id="diagram_OrderPriority"><dmndi:DMNShape id="shape_OrderPriority" dmnElementRef="OrderPriority"><dc:Bounds x="160" y="100" width="220" height="90"/></dmndi:DMNShape></dmndi:DMNDiagram></dmndi:DMNDI></definitions>

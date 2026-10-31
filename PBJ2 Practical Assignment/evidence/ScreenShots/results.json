@@ -1,0 +1,96 @@
+{
+  "scope": "Live execution was performed on a Windows/Docker installation on 30-31 October 2026. Results below were transcribed from Operate/Tasklist screenshots and copied process variables. Fifteen required scenarios have observed terminal outcomes. Seven additional example scenarios are not claimed as live-tested. Screenshot times are shown as displayed on the test PC.",
+  "limitations": "H5: the incident screenshot is a Lab 3 dashboard view without an instance key. The recovered H5 instance is 2251799813723383. Their association follows the supplied test sequence and user-reported correction/retry, not an independently visible before/after key match. No detailed incident screenshot was supplied. Tasklist captures include pre-completion forms/lists; final human outcomes are supported by Operate history and copied variables. The L3 form belongs to an active duplicate, while the completed L3 evidence uses a different instance. L2 rejection is supported by copied variables and the completed instance list rather than a dedicated final detail image.",
+  "results": [
+    {
+      "case": "L1-approved",
+      "instance": "2251799813686796",
+      "actual": "Approved",
+      "status": "Passed"
+    },
+    {
+      "case": "L2-rejected",
+      "instance": "2251799813691464",
+      "actual": "Rejected; copied variables plus completed-list evidence",
+      "status": "Passed"
+    },
+    {
+      "case": "L3-manual",
+      "instance": "2251799813692297",
+      "actual": "Manual Review -> reviewer Approve -> Approved",
+      "status": "Passed"
+    },
+    {
+      "case": "L4-credit-error",
+      "instance": "2251799813700233",
+      "actual": "Credit incident -> correction/retry -> Approved",
+      "status": "Passed"
+    },
+    {
+      "case": "L5-worker-error",
+      "instance": "2251799813701734",
+      "actual": "Validation worker incident -> correction/retry -> Approved",
+      "status": "Passed"
+    },
+    {
+      "case": "O1-paid",
+      "instance": "2251799813696379",
+      "actual": "Paid; Fulfilled",
+      "status": "Passed"
+    },
+    {
+      "case": "O2-no-stock",
+      "instance": "2251799813702359",
+      "actual": "Out of stock",
+      "status": "Passed"
+    },
+    {
+      "case": "O3-declined",
+      "instance": "2251799813702757",
+      "actual": "Declined; Payment declined",
+      "status": "Passed"
+    },
+    {
+      "case": "O4-high-value",
+      "instance": "2251799813704225",
+      "actual": "High-value review -> approved -> fulfilled route completed",
+      "status": "Passed"
+    },
+    {
+      "case": "O5-payment-error",
+      "instance": "2251799813715498",
+      "actual": "Payment incident -> correction/retry -> fulfilled route completed",
+      "status": "Passed"
+    },
+    {
+      "case": "H1-routine",
+      "instance": "2251799813697163",
+      "actual": "Booked",
+      "status": "Passed"
+    },
+    {
+      "case": "H2-priority",
+      "instance": "2251799813716434",
+      "actual": "Priority staff review -> continuation -> Booked",
+      "status": "Passed"
+    },
+    {
+      "case": "H3-urgent",
+      "instance": "2251799813717405",
+      "actual": "Human assessment recorded; staffActionRecorded=true",
+      "status": "Passed"
+    },
+    {
+      "case": "H4-no-slots",
+      "instance": "2251799813717956",
+      "actual": "No slots; staff review -> Staff follow-up required",
+      "status": "Passed"
+    },
+    {
+      "case": "H5-scheduling-error",
+      "instance": "2251799813723383",
+      "actual": "Lab 3 HTTP 503 dashboard observed; user reported correction/retry; H5 completed Booked",
+      "status": "Passed with evidence limitation"
+    }
+  ]
+}

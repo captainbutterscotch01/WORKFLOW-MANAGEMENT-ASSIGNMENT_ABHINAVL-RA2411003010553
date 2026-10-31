@@ -1,0 +1,9 @@
+{
+  "caseId": "O2-no-stock",
+  "customerRef": "SYN-C001",
+  "productId": "P300",
+  "quantity": 2,
+  "deliveryPreference": "Standard",
+  "customerCategory": "Standard",
+  "paymentToken": "tok_success"
+}

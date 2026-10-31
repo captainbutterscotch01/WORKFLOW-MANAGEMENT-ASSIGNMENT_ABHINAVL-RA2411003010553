@@ -1,0 +1,9 @@
+{
+  "caseId": "O5-payment-error",
+  "customerRef": "SYN-C001",
+  "productId": "P100",
+  "quantity": 2,
+  "deliveryPreference": "Standard",
+  "customerCategory": "Standard",
+  "paymentToken": "tok_success"
+}

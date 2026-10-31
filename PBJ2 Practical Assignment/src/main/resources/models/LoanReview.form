@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 16,
+  "id": "LoanReview",
+  "type": "default",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "components": [
+    {
+      "type": "text",
+      "id": "intro",
+      "text": "# Loan manual review\nReview the synthetic case details before completing this task."
+    },
+    {
+      "type": "textfield",
+      "id": "case",
+      "key": "caseId",
+      "label": "Case reference",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "context_applicantName",
+      "key": "applicantName",
+      "label": "applicantName",
+      "readonly": true
+    },
+    {
+      "type": "number",
+      "id": "context_age",
+      "key": "age",
+      "label": "age",
+      "readonly": true
+    },
+    {
+      "type": "number",
+      "id": "context_loanAmount",
+      "key": "loanAmount",
+      "label": "loanAmount",
+      "readonly": true
+    },
+    {
+      "type": "number",
+      "id": "context_monthlyIncome",
+      "key": "monthlyIncome",
+      "label": "monthlyIncome",
+      "readonly": true
+    },
+    {
+      "type": "number",
+      "id": "context_creditScore",
+      "key": "creditScore",
+      "label": "creditScore",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "context_loanDecision",
+      "key": "loanDecision",
+      "label": "loanDecision",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "notes",
+      "key": "reviewNotes",
+      "label": "Review notes / action taken",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "type": "radio",
+      "id": "approval",
+      "key": "reviewDecision",
+      "label": "Decision",
+      "values": [
+        {
+          "label": "Approve / continue",
+          "value": "Approve"
+        },
+        {
+          "label": "Reject / refer",
+          "value": "Reject"
+        }
+      ],
+      "validate": {
+        "required": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "caseId": "H6-priority-refer",
+  "patientRef": "SYN-P001",
+  "appointmentPreference": "Morning",
+  "symptomsSummary": "Fictional educational test case",
+  "urgentIndicator": false,
+  "priorityIndicator": true,
+  "slotScenario": "available"
+}

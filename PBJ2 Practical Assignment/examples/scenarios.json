@@ -1,0 +1,398 @@
+[
+  {
+    "id": "L1-approved",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L1-approved",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 50000,
+      "loanAmount": 300000,
+      "creditProfile": "good"
+    },
+    "expected": "Approved",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "L2-rejected",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L2-rejected",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 50000,
+      "loanAmount": 300000,
+      "creditProfile": "poor"
+    },
+    "expected": "Rejected",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "L3-manual",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L3-manual",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 50000,
+      "loanAmount": 300000,
+      "creditProfile": "borderline"
+    },
+    "expected": "Manual loan review; Approved after reviewer approval",
+    "faultService": null,
+    "reviewDecision": "Approve",
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "L4-credit-error",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L4-credit-error",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 50000,
+      "loanAmount": 300000,
+      "creditProfile": "good"
+    },
+    "expected": "Credit connector incident; Approved after fault cleared and retry",
+    "faultService": "credit",
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "L5-worker-error",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L5-worker-error",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 50000,
+      "loanAmount": 300000,
+      "creditProfile": "good"
+    },
+    "expected": "Validation worker incident; Approved after fault cleared and retry",
+    "faultService": "loan-worker",
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "L6-invalid",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L6-invalid",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 0,
+      "loanAmount": 300000,
+      "creditProfile": "good"
+    },
+    "expected": "Invalid application",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "L7-manual-reject",
+    "lab": "loan",
+    "variables": {
+      "caseId": "L7-manual-reject",
+      "applicantRef": "SYN-A001",
+      "applicantName": "Synthetic Applicant",
+      "age": 30,
+      "monthlyIncome": 50000,
+      "loanAmount": 300000,
+      "creditProfile": "borderline"
+    },
+    "expected": "Manual loan review; Rejected after reviewer rejection",
+    "faultService": null,
+    "reviewDecision": "Reject",
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O1-paid",
+    "lab": "order",
+    "variables": {
+      "caseId": "O1-paid",
+      "customerRef": "SYN-C001",
+      "productId": "P100",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "Fulfilled",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O2-no-stock",
+    "lab": "order",
+    "variables": {
+      "caseId": "O2-no-stock",
+      "customerRef": "SYN-C001",
+      "productId": "P300",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "Out of stock",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O3-declined",
+    "lab": "order",
+    "variables": {
+      "caseId": "O3-declined",
+      "customerRef": "SYN-C001",
+      "productId": "P100",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_decline"
+    },
+    "expected": "Payment declined",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O4-high-value",
+    "lab": "order",
+    "variables": {
+      "caseId": "O4-high-value",
+      "customerRef": "SYN-C001",
+      "productId": "P200",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "High-value review; Fulfilled after reviewer approval",
+    "faultService": null,
+    "reviewDecision": "Approve",
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O5-payment-error",
+    "lab": "order",
+    "variables": {
+      "caseId": "O5-payment-error",
+      "customerRef": "SYN-C001",
+      "productId": "P100",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "Payment connector incident; Fulfilled after fault cleared and retry",
+    "faultService": "payment",
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O6-inventory-error",
+    "lab": "order",
+    "variables": {
+      "caseId": "O6-inventory-error",
+      "customerRef": "SYN-C001",
+      "productId": "P100",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "Inventory worker incident; Fulfilled after fault cleared and retry",
+    "faultService": "inventory",
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O7-review-reject",
+    "lab": "order",
+    "variables": {
+      "caseId": "O7-review-reject",
+      "customerRef": "SYN-C001",
+      "productId": "P200",
+      "quantity": 2,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "Review rejected; no payment attempted",
+    "faultService": null,
+    "reviewDecision": "Reject",
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "O8-invalid",
+    "lab": "order",
+    "variables": {
+      "caseId": "O8-invalid",
+      "customerRef": "SYN-C001",
+      "productId": "P100",
+      "quantity": 1.5,
+      "deliveryPreference": "Standard",
+      "customerCategory": "Standard",
+      "paymentToken": "tok_success"
+    },
+    "expected": "Invalid order",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H1-routine",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H1-routine",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Morning",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": false,
+      "priorityIndicator": false,
+      "slotScenario": "available"
+    },
+    "expected": "Booked",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H2-priority",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H2-priority",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Morning",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": false,
+      "priorityIndicator": true,
+      "slotScenario": "available"
+    },
+    "expected": "Priority staff review; Booked after continuation",
+    "faultService": null,
+    "reviewDecision": "Approve",
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H3-urgent",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H3-urgent",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Morning",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": true,
+      "priorityIndicator": false,
+      "slotScenario": "available"
+    },
+    "expected": "Immediate human assessment; Human assessment recorded after completion",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H4-no-slots",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H4-no-slots",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Morning",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": false,
+      "priorityIndicator": false,
+      "slotScenario": "none"
+    },
+    "expected": "No-slot staff task; Staff follow-up required after completion",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H5-scheduling-error",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H5-scheduling-error",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Morning",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": false,
+      "priorityIndicator": false,
+      "slotScenario": "available"
+    },
+    "expected": "Availability worker incident; Booked after fault cleared and retry",
+    "faultService": "scheduling",
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H6-priority-refer",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H6-priority-refer",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Morning",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": false,
+      "priorityIndicator": true,
+      "slotScenario": "available"
+    },
+    "expected": "Priority staff review; Referred to staff",
+    "faultService": null,
+    "reviewDecision": "Reject",
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  },
+  {
+    "id": "H7-invalid",
+    "lab": "hospital",
+    "variables": {
+      "caseId": "H7-invalid",
+      "patientRef": "SYN-P001",
+      "appointmentPreference": "Night",
+      "symptomsSummary": "Fictional educational test case",
+      "urgentIndicator": false,
+      "priorityIndicator": false,
+      "slotScenario": "available"
+    },
+    "expected": "Invalid registration",
+    "faultService": null,
+    "reviewDecision": null,
+    "actual": "NOT RUN on Camunda 8",
+    "status": "PENDING LIVE EXECUTION"
+  }
+]

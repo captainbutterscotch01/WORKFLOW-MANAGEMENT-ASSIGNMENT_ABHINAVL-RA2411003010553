@@ -1,0 +1,9 @@
+{
+  "caseId": "O7-review-reject",
+  "customerRef": "SYN-C001",
+  "productId": "P200",
+  "quantity": 2,
+  "deliveryPreference": "Standard",
+  "customerCategory": "Standard",
+  "paymentToken": "tok_success"
+}

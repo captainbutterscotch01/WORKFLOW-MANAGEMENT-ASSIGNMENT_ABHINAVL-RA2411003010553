@@ -1,0 +1,9 @@
+{
+  "caseId": "O8-invalid",
+  "customerRef": "SYN-C001",
+  "productId": "P100",
+  "quantity": 1.5,
+  "deliveryPreference": "Standard",
+  "customerCategory": "Standard",
+  "paymentToken": "tok_success"
+}
